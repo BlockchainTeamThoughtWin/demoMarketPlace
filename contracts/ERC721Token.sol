@@ -45,7 +45,7 @@ contract ERC721Token is
 
     function mint(
         address to,
-        string memory tokenURI,
+        string memory tokenUri,
         uint96 _royality
     ) external returns (uint256) {
         require(blacklist._isPermitted(msg.sender), "user is blacklisted");
@@ -60,7 +60,7 @@ contract ERC721Token is
         uint256 newItemId = _tokenIds.current();
 
         _mint(to, newItemId);
-        _setTokenURI(newItemId, tokenURI);
+        _setTokenURI(newItemId, tokenUri);
         _setTokenRoyalty(newItemId, to, _royality);
         _tokenIds.increment();
 

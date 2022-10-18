@@ -21,8 +21,8 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 const Private_Key =
-  "fa27394e98fadce31d62e0ef49adad668abd76abbd953d46f1b2c7f1d23d6e62";
-const goerli_api_key = "K63V19BYNUEP2EEIKIZYE1CGWY85SCRF41";
+  "8b2fdce36952621fc36032a163474c8efe8ba7358ad2bbf5d84a86f410253130";
+const goerli_api_key = "rGxqfGfFKZNxpE0shBlLDwrr4_ZBuB-R";
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
