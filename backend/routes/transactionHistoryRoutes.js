@@ -6,7 +6,7 @@ const TransactionHistory = require('../controllers/transactionHistoryController'
 
 router.post('/', TransactionHistory.TransactionHistory);
 
-router.get('/', TransactionHistory.TransactionHistory);
+router.get('/', TransactionHistory.get_TransactionHistory);
 router.get('/:_id', TransactionHistory.get_TransactionHistory);
 
 router.delete('/:_id', TransactionHistory.delete_TransactionHistory);

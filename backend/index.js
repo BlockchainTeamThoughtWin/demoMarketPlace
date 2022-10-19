@@ -9,6 +9,7 @@ const UserDetailsRoute = require('./routes/UserDetailsRoutes');
 const NFTDetailsRoute = require('./routes/nftDetailsRoutes');
 const NonceRoute = require('./routes/nonceRoutes');
 const MarketplaceRoute= require('./routes/marketplaceDetailsRoutes');
+const UserVerificationRoute= require('./routes/UserVerificationRouter');
 
 const cors = require('cors');
 const app = express();
@@ -29,6 +30,7 @@ app.use('/userdetails',UserDetailsRoute);
 app.use('/nftdetails',NFTDetailsRoute);
 app.use('/nonce',NonceRoute);
 app.use('/Marketplace',MarketplaceRoute);
+app.use('/UserVerification',UserVerificationRoute);
 
 console.log("server at port:",port);
 app.listen(port);

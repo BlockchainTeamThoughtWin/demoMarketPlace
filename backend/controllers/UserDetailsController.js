@@ -4,6 +4,7 @@ require('express');
 
 exports.create_user_details = async function(req,resp){
     const data = new userDetailsSchema(req.body);
+    
     const result = await data.save();
     resp.send(result);
 };
