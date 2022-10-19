@@ -1,0 +1,122 @@
+
+
+.BrandName {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(146, 194, 214)
+    
+  }
+
+  .BrandName ul li {
+      float: left;
+  }
+  
+  /* .Market {
+  }
+   */
+  .Yogi {
+    color: black;
+    text-decoration: none;
+    margin-top: 5px;
+    position: absolute;
+    left: 100px;
+
+  }
+
+  .Market
+     {
+        display: block;
+        color: black;
+        text-align: right;
+        padding: 14px 16px;
+        text-decoration: none;
+        /* float: right; */
+        margin: -6px;
+        padding: 15px;
+    font-weight: bold;
+    display: inline-block;
+    right: 50px !important ;
+      }
+
+      .logoplace{
+        position: relative;
+        left: 40px;
+      }
+
+      .IconProfile{
+        margin-top: -20px;
+        position: fixed;
+        right: 19px;
+      }
+      .IconWallet{
+        margin-top: -25px;
+        position: fixed;
+        right: 92px;
+       }
+
+       
+
+       .Create{
+        position: fixed;
+        right: 155px;
+        color: black !important;
+        margin-top: -34px;
+
+       }
+ 
+   
+       .Home{
+        position: fixed;
+        right: 243px;
+        color: black !important;
+        margin-top: -35px;
+       }
+ 
+ 
+
+      .Search{
+        height: 40px;
+        width: 430px;
+        background: transparent;
+        text-indent: 68px;
+        display: inline-block;
+        border-radius: 11px;
+        border: 2px solid;
+        margin-top: -1px;
+        position: absolute;
+        right: 501px;
+    
+      }
+
+
+
+      .searchicon
+      {
+        position: absolute;
+        top: 15px;
+        right: 894px;
+    }
+
+    .searchimg{
+      top: -76px  !important;
+    left: -7px !important ;
+    min-width: 50% !important;
+    max-width: 50% !important;
+    min-height: 50% !important;
+    max-height: 50% !important;
+    }
+    .NavBarLine{
+     line-height: 43px !important;
+     
+    }
+    .NavbarColor{
+      background-image: linear-gradient(to right, rgba(255,0,0,0), rgb(163, 177, 197));
+    } 
+
+    .Header{
+      right: 0;
+    }
+
+    
