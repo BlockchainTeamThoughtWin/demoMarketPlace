@@ -12,7 +12,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Royalt
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "contracts/mocks/interfaces/Iblacklist.sol";
 
-contract ERC721Token is
+contract ERC721TokenV2 is
     ERC721Upgradeable,
     OwnableUpgradeable,
     ERC721URIStorageUpgradeable,
@@ -45,8 +45,8 @@ contract ERC721Token is
 
     function mint(
         address to,
-        string memory tokenUri,
-        uint96 _royality
+        uint96 _royality,
+        string memory tokenUri
     ) external returns (uint256) {
         require(blacklist._isPermitted(msg.sender), "user is blacklisted");
         require(

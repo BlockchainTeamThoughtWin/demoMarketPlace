@@ -23,8 +23,14 @@ async function main() {
   const erc721Token = await upgrades.deployProxy(ERC721Token, [500, blacklist.address], {
     initializer: "initialize",
   });
-  await erc721Token.deployed();
-  console.log("ERC721Token   deployed to:", erc721Token.address);
+//   await erc721Token.deployed();
+//   console.log("ERC721Token   deployed to:", erc721Token.address);
+
+  const ERC721TokenV2 = await hre.ethers.getContractFactory("ERC721TokenV2");
+  const erc721TokenV2 = await upgrades.upgradeProxy(erc721Token, ERC721TokenV2);
+  console.log("ERC721TokenV2  deployed to:", erc721TokenV2.address);
+
+
 
   // MarketPlace
   const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");

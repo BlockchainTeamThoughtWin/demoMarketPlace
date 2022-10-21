@@ -1992,7 +1992,7 @@
       ]
     },
     "/Users/nandkishoregeete/Desktop/AuctionContract /contracts/MarketPlace.sol": {
-      "lastModificationDate": 1666102469513,
+      "lastModificationDate": 1666174985560,
       "contentHash": "8bcd2a6068d22d03a817e10beb9d764c",
       "sourceName": "contracts/MarketPlace.sol",
       "solcConfig": {
@@ -2860,8 +2860,8 @@
       ]
     },
     "/Users/nandkishoregeete/Desktop/AuctionContract /contracts/ERC721Token.sol": {
-      "lastModificationDate": 1666092432055,
-      "contentHash": "5795458efe2d4f56649ff641b9da7d95",
+      "lastModificationDate": 1666176801658,
+      "contentHash": "9e272b2b66f74014097e5ba3a377e21b",
       "sourceName": "contracts/ERC721Token.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -2903,7 +2903,7 @@
         "^0.8.4"
       ],
       "artifacts": [
-        "ERC721Token"
+        "ERC721TokenV2"
       ]
     },
     "/Users/nandkishoregeete/Desktop/AuctionContract /node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol": {
