@@ -2,29 +2,24 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "txHash": "0x9270d0f559ce772410027ba97eff499728c2f64fb3f051842ba420b1362ea889"
+    "txHash": "0xfc93997711d26bc7e1571a0622bb4dc4f15d4050e900565c3b58b9fb7edaf16a"
   },
   "proxies": [
     {
-      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0x05d4a2ace45331b2fa22380e3c651b20eeea7e77618d4051367fdee81ff957b2",
-      "kind": "transparent"
-    },
-    {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x23f7a793977cfeedc815382fd8de63b7ca00bc72449352b87220cd2d93ff1187",
+      "txHash": "0xf5028e232b35fe8fed4cb9ef4a9d57ea6530eab0bb24e3282883af9b64241314",
       "kind": "transparent"
     },
     {
       "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0xbcefdf058505e04b1b3817e9283b24ad6fc698a1d9f31d3273c6140be1aed970",
+      "txHash": "0x5265d6d19ee73690bc9074749f96008b50099238010e7a95b8d4a9fb3862452d",
       "kind": "transparent"
     }
   ],
   "impls": {
     "f99489645569ce3103f643d90b1cf6a9f9a2421c7f124cde1bdedefc35ec22be": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0xf75bba1689f38e46e7240a4ca3b3dc86817a534faac1987e8596b96b949f2ae0",
+      "txHash": "0x0883c12fa8bf85d97686f5ec2a50d1c8bfc072a0f3e5d644e3eb372bcc824ce9",
       "layout": {
         "solcVersion": "0.8.4",
         "storage": [
@@ -121,7 +116,7 @@
             "label": "_tokenIds",
             "offset": 0,
             "slot": "151",
-            "type": "t_struct(Counter)1661_storage",
+            "type": "t_struct(Counter)1774_storage",
             "contract": "ERC721Token",
             "src": "contracts/ERC721Token.sol:11"
           },
@@ -195,7 +190,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)1661_storage": {
+          "t_struct(Counter)1774_storage": {
             "label": "struct CountersUpgradeable.Counter",
             "members": [
               {
@@ -218,9 +213,9 @@
         }
       }
     },
-    "7821b370e16a672482b5794df0e95cb609ac7e80dd920f0bde40420c2e8460fc": {
+    "a046174c5c07eab8404488b4e103ef1e8586a79eb0735d1b63c504db4622c105": {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x08845feaa289679d3ec870e53e6594427d6f0686ca814c88007e1763ab2d2268",
+      "txHash": "0xeeb5db35ea21d8bf1064204741a921aebfa7bff7a27c05d3d1c0b2c996235637",
       "layout": {
         "solcVersion": "0.8.4",
         "storage": [
@@ -242,44 +237,72 @@
             "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
           },
           {
-            "label": "isnonceprocessed",
+            "label": "__gap",
             "offset": 0,
             "slot": "1",
-            "type": "t_mapping(t_uint256,t_bool)",
-            "contract": "MarketPlace",
-            "src": "contracts/marketplace.sol:27"
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
           },
           {
-            "label": "platFormFee",
+            "label": "_owner",
             "offset": 0,
-            "slot": "2",
-            "type": "t_uint256",
-            "contract": "MarketPlace",
-            "src": "contracts/marketplace.sol:29"
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
           },
           {
-            "label": "decimalPrecision",
+            "label": "__gap",
             "offset": 0,
-            "slot": "3",
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "platFormFeePercent",
+            "offset": 0,
+            "slot": "101",
             "type": "t_uint256",
             "contract": "MarketPlace",
-            "src": "contracts/marketplace.sol:30"
+            "src": "contracts/marketplace.sol:16"
           },
           {
             "label": "blacklist",
             "offset": 0,
-            "slot": "4",
-            "type": "t_contract(IblackList)4894",
+            "slot": "102",
+            "type": "t_contract(IblackList)3057",
             "contract": "MarketPlace",
-            "src": "contracts/marketplace.sol:31"
+            "src": "contracts/marketplace.sol:18"
+          },
+          {
+            "label": "isNonceProcessed",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_uint256,t_bool)",
+            "contract": "MarketPlace",
+            "src": "contracts/marketplace.sol:62"
           }
         ],
         "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
           "t_bool": {
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IblackList)4894": {
+          "t_contract(IblackList)3057": {
             "label": "contract IblackList",
             "numberOfBytes": "20"
           },

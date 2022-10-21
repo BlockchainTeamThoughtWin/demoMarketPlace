@@ -3432,6 +3432,11 @@
   "resolved" "https://registry.npmjs.org/env-paths/-/env-paths-2.2.1.tgz"
   "version" "2.2.1"
 
+"erc721a@^4.2.3":
+  "integrity" "sha512-0deF0hOOK1XI1Vxv3NKDh2E9sgzRlENuOoexjXRJIRfYCsLlqi9ejl2RF6Wcd9HfH0ldqC03wleQ2WDjxoOUvA=="
+  "resolved" "https://registry.npmjs.org/erc721a/-/erc721a-4.2.3.tgz"
+  "version" "4.2.3"
+
 "errno@~0.1.1":
   "version" "0.1.8"
   dependencies:

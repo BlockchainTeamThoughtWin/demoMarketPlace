@@ -9,11 +9,12 @@ async function main() {
   await myToken.deployed();
   console.log("ERC20Token deployed to:", myToken.address);
 
+
     // BlackList
   const BlackList = await hre.ethers.getContractFactory("BlackList");
   blacklist = await BlackList.deploy();
   await blacklist.deployed();
-    console.log("BlackList deployed to:", blacklist.address);
+  console.log("BlackList deployed to:", blacklist.address);
  
     // NFT721 Deployed
 
@@ -25,13 +26,13 @@ async function main() {
   await erc721Token.deployed();
   console.log("ERC721Token   deployed to:", erc721Token.address);
 
-     // MarketPlace
-     const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
-     marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
-       initializer: "initialize",
-     });
-     await marketPlace.deployed();
-     console.log("MarketPlace deployed to:", marketPlace.address);
+  // MarketPlace
+  const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
+  marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
+    initializer: "initialize",
+  });
+  await marketPlace.deployed();
+  console.log("MarketPlace deployed to:", marketPlace.address);
 
 }
 

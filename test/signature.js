@@ -3,61 +3,91 @@ const { ethers, web3 } = require("hardhat");
 const hre = require("hardhat");
 require("@nomiclabs/hardhat-web3");
 
-let seller,
-  buyer,
-  add1,
-  add2,
-  add4,
-  myToken,
-  decimalPrecision = 100,
-  royality = 200,
-  bidTime = 200;
-platFormFeePercent = 250;
+let seller, myToken, buyer, add1, add2, add3, erc721Token, marketPlace;
 
-describe("marketPlace", () => {
+describe("MarketPlace", () => {
   before(async () => {
     accounts = await hre.ethers.getSigners();
-    [
-      seller,
-      buyer,
-      add1,
-      add2,
-      tokenId,
-      add3,
-      add4,
-      userA,
-      userB,
-      userC,
-      userD,
-      userE,
-      _,
-    ] = accounts;
+    [seller, buyer, myToken, erc721Token, add1, add2, add3, marketPlace, _] =
+      accounts;
+    //    ERC20 Token
+    let ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
+    myToken = await ERC20Token.deploy("10000000");
 
-    const MarketPlace = await ethers.getContractFactory("MarketPlace");
-    const marketPlace = await MarketPlace.deploy();
+    //   Blacklist Deployed
+    let BlackList = await hre.ethers.getContractFactory("BlackList");
+    blacklist = await BlackList.deploy();
+
+    // ERC721 Deployed
+    let ERC721Token = await hre.ethers.getContractFactory("ERC721Token");
+    erc721Token = await upgrades.deployProxy(
+      ERC721Token,
+      [500, blacklist.address],
+      {
+        initializer: "initialize",
+      }
+    );
+    await erc721Token.deployed();
+
+    //   MarketPlace Deployed
+    let MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
+    marketPlace = await upgrades.deployProxy(MarketPlace, [blacklist.address], {
+      initializer: "initialize",
+    });
     await marketPlace.deployed();
-    console.log("MarketPlace deployed to:", marketPlace.address);
-  
-
-  
-    const ERC721Token = await ethers.getContractFactory("ERC721Token");
-    const eRC721Token = await ERC721Token.deploy("sanjay", "skc");
-    await eRC721Token.deployed();
-    console.log("ERC721Token deployed to:", eRC721Token.address);
-  
   });
+  describe("lazy buy functwion success cases", () => {
+    it("Lazybuy Functiown", async () => {
+      // let blockNumber = await ethers.provider.getBlockNumber();
+      // let block = await ethers.provider.getBlock(blockNumber);
 
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 0, "test", myToken.address, 200, 1]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
+
+  //     await myToken.transfer(buyer.address, 10000);
+
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, true);
+
+  //     await myToken.connect(buyer).approve(marketPlace.address, 2000);
+
+  //     Lazybuy = await marketPlace
+  //       .connect(buyer)
+  //       .LazyBuy([
+  //         1,
+  //         seller.address,
+  //         erc721Token.address,
+  //         myToken.address,
+  //         0,
+  //         100,
+  //         200,
+  //         sign,
+  //         "test",
+  //         block.timestamp,
+  //         block.timestamp + 100,
+  //       ]);
+
+    });
+  });
   describe("lazy buy function success cases", () => {
     it("Lazybuy Function", async () => {
       // Get current block.timestamp
-      let nonce = 0
-      let message = ethers.utils.solidityPack(
-        ["uint256", "uint256", "string", "uint256"],
-        [nonce, 200, "sanjay", 37]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, seller.address);
-   console.log(sign, seller.address);
+  //     let nonce =0;
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256","uint256"],
+  //       [myNFT.address, 0, "abhi", weth.address, 200,nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
+  //  console.log(seller.address);
       // await weth.connect(buyer).deposit({ value: "1000000000000" });
 
       // await myNFT.connect(seller).setApprovalForAll(marketPlace.address, true);
@@ -85,3 +115,10 @@ describe("marketPlace", () => {
     });
   });
 });
+
+
+
+
+
+
+
