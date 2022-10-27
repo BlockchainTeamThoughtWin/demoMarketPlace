@@ -12,7 +12,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Royalt
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "contracts/mocks/interfaces/Iblacklist.sol";
 
-contract ERC721TokenV2 is
+contract ERC721Token is
     ERC721Upgradeable,
     OwnableUpgradeable,
     ERC721URIStorageUpgradeable,

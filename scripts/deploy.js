@@ -1,31 +1,46 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
 
+
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  // signers = await ethers.getSigners();
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  const ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
+  const myToken = await ERC20Token.deploy("1000");
+  await myToken.deployed();
+  console.log("ERC20Token deployed to:", myToken.address);
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
 
-  await lock.deployed();
+    // BlackList
+  const BlackList = await hre.ethers.getContractFactory("BlackList");
+  blacklist = await BlackList.deploy();
+  await blacklist.deployed();
+  console.log("BlackList deployed to:", blacklist.address);
+ 
+    // NFT721 Deployed
 
-  console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  // ERC721
+  const ERC721Token = await hre.ethers.getContractFactory("ERC721Token");
+  erc721Token = await upgrades.deployProxy(ERC721Token, [500, blacklist.address], {
+    initializer: "initialize",
+  });
+  await erc721Token.deployed();
+  console.log("ERC721Token   deployed to:", erc721Token.address);
+
+  // MarketPlace
+  const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
+  marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
+    initializer: "initialize",
+  });
+  await marketPlace.deployed();
+  console.log("MarketPlace deployed to:", marketPlace.address);
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
