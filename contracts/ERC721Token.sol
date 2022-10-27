@@ -1,86 +1,125 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721RoyaltyUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "contracts/mocks/interfaces/Iblacklist.sol";
 
-
-contract ERC721Token is ERC721Upgradeable {
+contract ERC721TokenV2 is
+    ERC721Upgradeable,
+    OwnableUpgradeable,
+    ERC721URIStorageUpgradeable,
+    ERC721BurnableUpgradeable,
+    ERC721EnumerableUpgradeable,
+    ERC721PausableUpgradeable,
+    ERC721RoyaltyUpgradeable
+{
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _tokenIds;
+    IblackList blacklist;
 
-    mapping(uint256 => uint256) public royalities;
-    mapping(uint256 => string) private _tokenURIs;
-    uint256 public maximumRoyality;
+    uint96 public maximumRoyality;
 
-    function initialize(uint96 _maxRoyalty) public initializer{
+    function initialize(uint96 _maxRoyality, IblackList _blacklistAddress)
+        public
+        initializer
+    {
         __ERC721_init("MarketPlace", "MKP");
-        maximumRoyality = _maxRoyalty;
+        __ERC721Burnable_init();
+        __ERC721Enumerable_init();
+        __ERC721Pausable_init();
+        __ERC721Royalty_init();
+        __ERC721URIStorage_init();
+        __Ownable_init();
         _tokenIds.increment();
+        maximumRoyality = _maxRoyality;
+        blacklist = _blacklistAddress;
     }
 
-        function mint(
-        address to, uint256 _royality, string memory _tokenURI) public returns (uint256) {
+    function mint(
+        address to,
+        uint96 _royality,
+        string memory tokenUri
+    ) external returns (uint256) {
+        require(blacklist._isPermitted(msg.sender), "user is blacklisted");
+        require(
+            _royality <= maximumRoyality,
+            "ERC721Token: Royality should be less"
+        );
+        require(
+            address(to) != address(0),
+            "ERC721Token: to address can't be 0x0"
+        );
         uint256 newItemId = _tokenIds.current();
-        _tokenIds.increment();
+
         _mint(to, newItemId);
-        royalities[newItemId] = _royality;
-        _setTokenURI(newItemId, _tokenURI);
+        _setTokenURI(newItemId, tokenUri);
+        _setTokenRoyalty(newItemId, to, _royality);
+        _tokenIds.increment();
+
         return newItemId;
     }
 
-    function setmaximumRoyality(uint256 _maxroyality) public {
-        maximumRoyality = _maxroyality;
+    function setMaximumRoyality(uint96 _value) external onlyOwner {
+        maximumRoyality = _value;
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    )
+        internal
+        virtual
+        override(
+            ERC721EnumerableUpgradeable,
+            ERC721PausableUpgradeable,
+            ERC721Upgradeable
+        )
+    {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _burn(uint256 tokenId)
+        internal
+        virtual
+        override(
+            ERC721RoyaltyUpgradeable,
+            ERC721URIStorageUpgradeable,
+            ERC721Upgradeable
+        )
+    {
+        return super._burn(tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
-        override(ERC721Upgradeable)
+        override(
+            ERC721EnumerableUpgradeable,
+            ERC721RoyaltyUpgradeable,
+            ERC721Upgradeable
+        )
         returns (bool)
     {
-        return
-            ERC721Upgradeable.supportsInterface(interfaceId);
-    }
-
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI)
-        internal
-        virtual
-    {
-        require(
-            _exists(tokenId),
-            "ERC721URIStorage: URI set of nonexistent token"
-        );
-        _tokenURIs[tokenId] = _tokenURI;
+        return super.supportsInterface(interfaceId);
     }
 
     function tokenURI(uint256 tokenId)
         public
         view
         virtual
-        override
+        override(ERC721URIStorageUpgradeable, ERC721Upgradeable)
         returns (string memory)
     {
-        require(
-            _exists(tokenId),
-            "ERC721URIStorage: URI query for nonexistent token"
-        );
-
-        string memory _tokenURI = _tokenURIs[tokenId];
-        string memory base = _baseURI();
-
-        // If there is no base URI, return the token URI.
-        if (bytes(base).length == 0) {
-            return _tokenURI;
-        }
-        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
-        if (bytes(_tokenURI).length > 0) {
-            return string(abi.encodePacked(base, _tokenURI));
-        }
-
         return super.tokenURI(tokenId);
     }
-
 }

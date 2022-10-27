@@ -4,6 +4,7 @@ require("@openzeppelin/hardhat-upgrades");
 require("@nomiclabs/hardhat-etherscan");
 
 require("@nomiclabs/hardhat-web3");
+require("dotenv").config();
 
 // task action function receives the Hardhat Runtime Environment as second argument
 task("accounts", "Prints accounts", async (_, { web3 }) => {
@@ -20,9 +21,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
-const Private_Key =
-  "fa27394e98fadce31d62e0ef49adad668abd76abbd953d46f1b2c7f1d23d6e62";
-const goerli_api_key = "K63V19BYNUEP2EEIKIZYE1CGWY85SCRF41";
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -93,13 +91,13 @@ module.exports = {
 
 networks: {
     goerli: {
-      url: `https://eth-goerli.g.alchemy.com/v2/rGxqfGfFKZNxpE0shBlLDwrr4_ZBuB-R`,
-      accounts: [`0x${Private_Key}`],
+      url: process.env.ALCHEMY_GOERLI_URL,
+      accounts: [process.env.PRIVATE_KEY]
     },
   },
   etherscan: {
     apiKey: {
-      goerli: goerli_api_key,
+      goerli: "DNZ4DW35G4WKQSFN48XW9R2PMAVNQI23SU",
 
     },
   },
