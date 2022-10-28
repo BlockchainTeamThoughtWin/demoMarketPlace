@@ -5,6 +5,8 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import CardsSlider from "../components/CardsSlider";
 import HomeTable from "../components/HomeTable";
+import NotableCollections from "../components/NotableCollections";
+import Dreamersspotlight from "../components/Dreamersspotlight";
 
 export default function Home() {
   return (
@@ -16,6 +18,9 @@ export default function Home() {
       </div>
       <CardsSlider />
       <HomeTable />
+
+      <NotableCollections />
+      <Dreamersspotlight />
     </>
   );
 }

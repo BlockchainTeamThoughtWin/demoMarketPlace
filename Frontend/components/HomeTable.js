@@ -1,37 +1,53 @@
 import Table from "react-bootstrap/Table";
+import { useEffect } from "react";
+import { getNFt } from "../pages/api/getNFT";
+import React from "react";
 
-function BasicExample() {
+export default () => {
+  const callNFts = async () => {
+    const res = await getNFt();
+    console.log("data is ", res.data);
+  };
+
+  useEffect(() => {
+    callNFts();
+  }, []);
   return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Username</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td colSpan={2}>Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </Table>
-  );
-}
+    <div>
+      <div>
+        <h1>Trending</h1>
+      </div>
 
-export default BasicExample;
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th></th>
+            <th>COLLECTION</th>
+            <th>Floor Price</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Demo NFT</td>
+            <td>0.33 ETH</td>
+            <td>500 ETH</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Demo NFT</td>
+            <td>0.33 ETH</td>
+            <td>500 ETH</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Demo NFT</td>
+            <td>0.33 ETH</td>
+            <td>500 ETH</td>
+          </tr>
+        </tbody>
+      </Table>
+    </div>
+  );
+};

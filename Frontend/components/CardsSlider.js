@@ -32,25 +32,25 @@ export default () => {
       onSwiper={(swiper) => console.log(swiper)}
     >
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
       <SwiperSlide>
-        <img src="/Nft.jpg" width="100%" height="100%"></img>
+        <img src="/Nft.jpg" width="80%" height="80%"></img>
       </SwiperSlide>
     </Swiper>
   );
