@@ -10,9 +10,6 @@ const userVerificationSchema = new mongoose.Schema({
     },
     signature:{
         type: String,
-    },
-    hash:{
-        type: String,
     }
 
 });
