@@ -160,7 +160,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
         
         //
-        uint256 feeOnPlatForm = (seller.amount).mul(platFormFeePercent).div(decimalPrecision).div(100);
+        uint256 feeOnPlatForm = (seller.amount).mul(platFormFeePercent).div(decimalPrecision.mul(100));
 
         instance20.transferFrom(buyer, address(this), feeOnPlatForm);
 
@@ -332,6 +332,8 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
                 s
             );
     }
+
+ 
     /**
      *@dev Method: is used to provide signer.
      *@param sellerDetails: Details about seller of the NFT Auction.
@@ -402,3 +404,4 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     receive() external payable {}
     
 }
+

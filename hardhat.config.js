@@ -15,7 +15,7 @@ task("accounts", "Prints accounts", async (_, { web3 }) => {
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
-  
+
   for (const account of accounts) {
     console.log(account.address);
   }
@@ -71,8 +71,8 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
+            runs: 200,
+          },
         },
       },
       {
@@ -80,25 +80,26 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
+            runs: 200,
+          },
         },
-      }
-
+      },
     ],
   },
 
-
-networks: {
+  networks: {
     goerli: {
       url: process.env.ALCHEMY_GOERLI_URL,
-      accounts: [process.env.PRIVATE_KEY]
+      accounts: [
+        process.env.PRIVATE_KEY,
+        process.env.PRIVATE_KEY1,
+        process.env.PRIVATE_KEY2,
+      ],
     },
   },
   etherscan: {
     apiKey: {
       goerli: "DNZ4DW35G4WKQSFN48XW9R2PMAVNQI23SU",
-
     },
   },
 };
