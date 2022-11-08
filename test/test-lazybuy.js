@@ -3,13 +3,35 @@ const { ethers, web3 } = require("hardhat");
 const hre = require("hardhat");
 require("@nomiclabs/hardhat-web3");
 
-let seller, myToken, buyer, add1, add2, add3,add4, erc721Token, marketPlace;
+let seller,
+  myToken,
+  buyer,
+  add1,
+  add2,
+  add3,
+  add4,
+  add5,
+  add6,
+  erc721Token,
+  marketPlace;
 
 describe("MarketPlace", () => {
   before(async () => {
     accounts = await hre.ethers.getSigners();
-    [seller, buyer, myToken, erc721Token, add1, add2, add3,add4, marketPlace, _] =
-      accounts;
+    [
+      seller,
+      buyer,
+      myToken,
+      erc721Token,
+      add1,
+      add2,
+      add3,
+      add4,
+      add5,
+      add6,
+      marketPlace,
+      _,
+    ] = accounts;
     //    ERC20 Token
     let ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
     myToken = await ERC20Token.deploy(ethers.utils.parseEther("10000"));
@@ -40,22 +62,24 @@ describe("MarketPlace", () => {
     it("Lazybuy Function", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nftPrice = 200;
+      let nftPrice = ethers.utils.parseEther("1");
+      let plat = 250;
+      let royality = 100;
       let nonce = 1;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "test", myToken.address, nftPrice, nonce]
+        [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
       );
       let messageHash = ethers.utils.keccak256(message);
       let sign = await web3.eth.sign(messageHash, seller.address);
 
-      await myToken.transfer(buyer.address, 10000);
+      await myToken.transfer(buyer.address, ethers.utils.parseEther("2"));
 
       await erc721Token
         .connect(seller)
         .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(buyer).approve(marketPlace.address, 2000);
+      await myToken.connect(buyer).approve(marketPlace.address, nftPrice);
 
       Lazybuy = await marketPlace
         .connect(buyer)
@@ -64,8 +88,8 @@ describe("MarketPlace", () => {
           seller.address,
           erc721Token.address,
           myToken.address,
-          1,
-          100,
+          0,
+          royality,
           nftPrice,
           sign,
           "test",
@@ -75,24 +99,15 @@ describe("MarketPlace", () => {
 
       expect(await erc721Token.ownerOf(1)).to.be.equal(buyer.address);
       expect(await erc721Token.balanceOf(buyer.address)).to.be.equal(1);
-
-      console.log(seller.address);
-      console.log(buyer.address);
-
-      console.log(add1.address);
-
-      console.log(add2.address);
-      console.log(add3.address);
-
-
     });
 
     it("Buy Minted Nft ", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
       let nonce = 2;
-      let nftPrice = 300;
-
+      let nftPrice = ethers.utils.parseEther("1");
+      let royality = 100;
+      let plat = 250;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
         [erc721Token.address, 1, "testing", myToken.address, nftPrice, nonce]
@@ -100,13 +115,13 @@ describe("MarketPlace", () => {
       let messageHash = ethers.utils.keccak256(message);
       let sign = await web3.eth.sign(messageHash, buyer.address);
 
-      await myToken.transfer(add1.address, 10000);
+      await myToken.transfer(add1.address, ethers.utils.parseEther("2"));
 
       await erc721Token
         .connect(buyer)
         .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(add1).approve(marketPlace.address, 2000);
+      await myToken.connect(add1).approve(marketPlace.address, nftPrice);
 
       Lazybuy = await marketPlace
         .connect(add1)
@@ -144,13 +159,13 @@ describe("MarketPlace", () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
 
-      let nonce = 9;
+      let nonce = 3;
       let nftPrice = ethers.utils.parseEther("1");
       let royality = 100;
       let plat = 250;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "testing", myToken.address, nftPrice, nonce]
+        [erc721Token.address, 0, "testing", myToken.address, nftPrice, nonce]
       );
       let messageHash = ethers.utils.keccak256(message);
       let sign = web3.eth.sign(messageHash, add1.address);
@@ -161,6 +176,7 @@ describe("MarketPlace", () => {
       // console.log("oldBuyBal", oldBuyerBal);
 
       await myToken.transfer(add3.address, nftPrice);
+      // console.log("oldBuyBal",await myToken.balanceOf(add3.address));
 
       await erc721Token
         .connect(add1)
@@ -178,7 +194,7 @@ describe("MarketPlace", () => {
           add1.address,
           erc721Token.address,
           myToken.address,
-          1,
+          0,
           royality,
           nftPrice,
           sign,
@@ -187,7 +203,7 @@ describe("MarketPlace", () => {
           block.timestamp + 100,
         ]);
 
-      expect(await erc721Token.ownerOf(1)).to.be.equal(add3.address);
+      expect(await erc721Token.ownerOf(2)).to.be.equal(add3.address);
 
       expect(await erc721Token.balanceOf(add3.address)).to.be.equal(1);
 
@@ -196,71 +212,81 @@ describe("MarketPlace", () => {
       // console.log("CalculatedRoyality", calculatedRoyality);
 
       let newPlatFormBal = (nftPrice * plat) / 10000;
-      // console.log("New PlatFormBal", newPlatFormBal);
+      console.log("New PlatFormBal", newPlatFormBal);
 
-      let remainingAmount = nftPrice - calculatedRoyality - newPlatFormBal;
+      // let OlatFormBal = await my.balanceOf(marketPlace.address);
+      // console.log("OLd PlatFormBal", OllatFormBal);
+
+      let remainingAmount = nftPrice - newPlatFormBal;
       // console.log("Remaining Amount", remainingAmount);
+
+      
+
+      // let ActualAmount = remainingAmount - calculatedRoyality;
 
       let newSellerBal = await myToken.balanceOf(add1.address);
       let newBuyerBal = await myToken.balanceOf(add3.address);
       // console.log("newSellBal", newSellerBal);
       // console.log("newBuyBal", newBuyerBal);
 
-      expect(newSellerBal).to.be.equals(
+      expect(newSellerBal).to.equals(
         oldSellerBal.add(ethers.BigNumber.from(remainingAmount.toString()))
+
+      
       );
     });
 
-    // it ("Should check event", async () => {
+    it("Should check event", async () => {
+      let blockNumber = await ethers.provider.getBlockNumber();
+      let block = await ethers.provider.getBlock(blockNumber);
+      let nonce = 10;
+      let nftPrice = ethers.utils.parseEther("1");
+      let royality = 100;
+      let plat = 250;
+      let message = ethers.utils.solidityPack(
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [erc721Token.address, 0, "teting", myToken.address, nftPrice, nonce]
+      );
+      let messageHash = ethers.utils.keccak256(message);
+      let sign = web3.eth.sign(messageHash, add3.address);
+      await myToken.transfer(add4.address, nftPrice);
 
-    //   let blockNumber = await ethers.provider.getBlockNumber();
-    //   let block = await ethers.provider.getBlock(blockNumber);
-    //   let nonce = 10;
-    //   let nftPrice = ethers.utils.parseEther("1");
-    //   let royality = 100;
-    //   let plat = 250;
-    //   let message = ethers.utils.solidityPack(
-    //     ["address", "uint256", "string", "address", "uint256", "uint256"],
-    //     [erc721Token.address, 1, "teting", myToken.address, nftPrice, nonce]
-    //   );
-    //   let messageHash = ethers.utils.keccak256(message);
-    //   let sign = web3.eth.sign(messageHash, add3.address);
-    //   await myToken.transfer(add4.address, nftPrice);
+      await erc721Token
+        .connect(add3)
+        .setApprovalForAll(marketPlace.address, true);
 
-    //   await erc721Token
-    //     .connect(add3)
-    //     .setApprovalForAll(marketPlace.address, true);
+      await myToken.connect(add4).approve(marketPlace.address, nftPrice);
+      let Lazybuy = await marketPlace
+        .connect(add4)
+        .LazyBuy([
+          nonce,
+          add3.address,
+          erc721Token.address,
+          myToken.address,
+          0,
+          royality,
+          nftPrice,
+          sign,
+          "teting",
+          block.timestamp,
+          block.timestamp + 100,
+        ]);
+      // console.log(Lazybuy);
 
-    //   await myToken.connect(add4).approve(marketPlace.address, nftPrice);
-    //  let  Lazybuy = await marketPlace
-    //   .connect(add4)
-    //   .LazyBuy([
-    //     nonce,
-    //     add3.address,
-    //     erc721Token.address,
-    //     myToken.address,
-    //     1,
-    //     royality,
-    //     nftPrice,
-    //     sign,
-    //     "teting",
-    //     block.timestamp,
-    //     block.timestamp + 100,
-    //   ]);
+      expect(await erc721Token.ownerOf(3)).to.be.equal(add4.address);
 
-    // expect(await erc721Token.ownerOf(1)).to.be.equal(add4.address);
+      expect(await erc721Token.balanceOf(add4.address)).to.be.equal(1);
 
-    // expect(await erc721Token.balanceOf(add4.address)).to.be.equal(1);
-
-    // receipt = await Lazybuy.wait();
-    //         for (const event of receipt.events) {
-    //             // console.log("Event Name:", event.args);
-    //         }
-    //          expect(await receipt.events[1].args[2]).to.be.equals(add9.address);
-    //         // expect(await receipt.events[1].event).to.be.equals("OnSale");
-    //         // console.log("Event Name: ", await receipt.events[1].event);
-    //         // console.log("Owner Address: ", await receipt.events[1].args[2]);
-    // })
+      receipt = await Lazybuy.wait();
+      for (const event of receipt.events) {
+        // console.log("Event Name:", event.args);
+      }
+      console.log(add3.address);
+      expect(await receipt.events[7].args[1]).to.be.equals(add3.address);
+      expect(await receipt.events[7].event).to.be.equals("lazybuy");
+      // console.log("Event Name: ", await receipt.events[7].event);
+      // console.log("Owner Address: ", await receipt.events[7].args[2]);
+    });
   });
 
   describe("LazyBuy Negative Cases", () => {
@@ -307,10 +333,10 @@ describe("MarketPlace", () => {
     it("Should Check that colection must be approve", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 3;
+      let nonce = 4;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "test", myToken.address, 200, nonce]
+        [erc721Token.address, 0, "test", myToken.address, 200, nonce]
       );
       let messageHash = ethers.utils.keccak256(message);
       let sign = await web3.eth.sign(messageHash, seller.address);
@@ -331,7 +357,7 @@ describe("MarketPlace", () => {
             seller.address,
             erc721Token.address,
             myToken.address,
-            1,
+            0,
             100,
             200,
             sign,
@@ -339,23 +365,19 @@ describe("MarketPlace", () => {
             block.timestamp,
             block.timestamp + 100,
           ])
-      ).to.be.revertedWith("MarketPlace: Collection must be approved.");
+      ).to.be.revertedWith("MarketPlace: address not approve");
     });
 
     it("Should Check Seller Signature", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 4;
+      let nonce = 5;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
         [erc721Token.address, 1, "test", myToken.address, 200, nonce]
       );
       let messageHash = ethers.utils.keccak256(message);
       let sign = await web3.eth.sign(messageHash, buyer.address);
-     
-      
-      
-
 
       await myToken.transfer(buyer.address, 10000);
 
@@ -389,7 +411,7 @@ describe("MarketPlace", () => {
     it("Check invalid signature length", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 5;
+      let nonce = 6;
       let message = ethers.utils.solidityPack(
         ["address", "uint256", "string", "address", "uint256", "uint256"],
         [erc721Token.address, 1, "test", myToken.address, 200, nonce]
@@ -424,78 +446,128 @@ describe("MarketPlace", () => {
       ).to.be.revertedWith("MarketPlace: invalid signature length.");
     });
 
-     it ("Should check Token Allowance", async ()=> {
+    it("Should check Token Allowance", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 6;
+      let nonce = 7;
 
       let message = ethers.utils.solidityPack(
-        ["address","uint256", "string","address","uint256","uint256"],
-        [erc721Token.address, 1,"testing", myToken.address,300,nonce]
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [erc721Token.address, 1, "testing", myToken.address, 300, nonce]
       );
       let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash,add3.address)
+      let sign = await web3.eth.sign(messageHash, add1.address);
 
       await myToken.transfer(add2.address, 10000);
 
       await erc721Token
-        .connect(add3)
+        .connect(add1)
         .setApprovalForAll(marketPlace.address, true);
 
       await myToken.connect(add2).approve(marketPlace.address, 50);
 
-    await  expect (marketPlace
-        .connect(add2)
-        .LazyBuy([
-          nonce,
-          add3.address,
-          erc721Token.address,
-          myToken.address,
-          1,
-          100,
-          300,
-          sign,
-          "testing",
-          block.timestamp,
-          block.timestamp + 100,
-        ])).to.be.revertedWith( "MarketPlace: Check the token allowance.")
-     })
+      await expect(
+        marketPlace
+          .connect(add2)
+          .LazyBuy([
+            nonce,
+            add1.address,
+            erc721Token.address,
+            myToken.address,
+            1,
+            100,
+            300,
+            sign,
+            "testing",
+            block.timestamp,
+            block.timestamp + 100,
+          ])
+      ).to.be.revertedWith("MarketPlace: Check the token allowance.");
+    });
 
-     it ("Should check Balance", async ()=> {
+    it("Should check Balance", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 6;
+      let nonce = 8;
 
       let message = ethers.utils.solidityPack(
-        ["address","uint256", "string","address","uint256","uint256"],
-        [erc721Token.address, 1,"testing", myToken.address,1000000000000000,nonce]
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [
+          erc721Token.address,
+          1,
+          "testing",
+          myToken.address,
+          1000000000000000,
+          nonce,
+        ]
       );
       let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash,add3.address)
+      let sign = await web3.eth.sign(messageHash, add1.address);
 
       // await myToken.transfer(add2.address, 10000);
 
       await erc721Token
-        .connect(add3)
+        .connect(add1)
         .setApprovalForAll(marketPlace.address, true);
 
       await myToken.connect(add2).approve(marketPlace.address, 1000);
 
-    await  expect (marketPlace
-        .connect(add2)
-        .LazyBuy([
-          nonce,
-          add3.address,
-          erc721Token.address,
-          myToken.address,
-          1,
-          100,
-          1000000000000000,
-          sign,
-          "testing",
-          block.timestamp,
-          block.timestamp + 100,
-        ])).to.be.revertedWith( 'MarketPlace: Insufficient Amount')
-     })
+      await expect(
+        marketPlace
+          .connect(add2)
+          .LazyBuy([
+            nonce,
+            add1.address,
+            erc721Token.address,
+            myToken.address,
+            1,
+            100,
+            1000000000000000,
+            sign,
+            "testing",
+            block.timestamp,
+            block.timestamp + 100,
+          ])
+      ).to.be.revertedWith("MarketPlace: Insufficient Amount");
+    });
+    it("Should check user is Blacklist or not", async () => {
+      let black = await blacklist.AddRemoveBlacklist(add5.address);
+      let blockNumber = await ethers.provider.getBlockNumber();
+      let block = await ethers.provider.getBlock(blockNumber);
+      let nftPrice = 200;
+      let nonce = 9;
+      let message = ethers.utils.solidityPack(
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
+      );
+      let messageHash = ethers.utils.keccak256(message);
+      let sign = await web3.eth.sign(messageHash, seller.address);
+
+      await myToken.transfer(add5.address, 10000);
+
+      await erc721Token
+        .connect(seller)
+        .setApprovalForAll(marketPlace.address, true);
+
+      await myToken.connect(add5).approve(marketPlace.address, 2000);
+
+      await expect(
+        marketPlace
+          .connect(add5)
+          .LazyBuy([
+            nonce,
+            seller.address,
+            erc721Token.address,
+            myToken.address,
+            0,
+            100,
+            nftPrice,
+            sign,
+            "test",
+            block.timestamp,
+            block.timestamp + 100,
+          ])
+      ).to.be.revertedWith("MarketPlace: user is blacklisted");
+    });
   });
 });

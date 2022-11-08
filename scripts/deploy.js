@@ -13,7 +13,7 @@ async function main() {
     // BlackList
   const BlackList = await hre.ethers.getContractFactory("BlackList");
   blacklist = await BlackList.deploy();
-  await blacklist.deployed();
+  await BlackList.deployed();
   console.log("BlackList deployed to:", blacklist.address);
  
     // NFT721 Deployed
