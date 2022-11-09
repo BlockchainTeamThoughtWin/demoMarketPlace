@@ -1,3 +1,40 @@
+.Create{
+  text-align: center;
+  padding: 50px;
+}
+
+.Names{
+  margin-top: 25px;
+}
+
+.names{
+  margin-top: -12px;
+}
+
+.primary{
+  margin-top: 20px;
+  width: 125px;
+  height: 50px;
+}
+
+.drop{
+  background: transparent;
+  color: black;
+  width: 100%;
+  text-align: left;
+  height: 50px;
+}
+
+.chain{
+  width: 100%;
+  height: 50px;
+}
+
+.form{
+  width: 50%;
+  margin: auto;
+  text-align:left;
+}
 
   #form-file-upload {
     height: 16rem;

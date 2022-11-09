@@ -1,81 +1,112 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-// import style from "../styles/create.module.css";
+import Form from "react-bootstrap/Form";
+import style from "../styles/create.module.css";
+import Button from "react-bootstrap/Button";
 
 const Create = () => {
-  const [dragActive, setDragActive] = React.useState(false);
-  // ref
-  const inputRef = React.useRef(null);
+  const [query, setQuery] = useState({
+    _name: "",
+    Link: "",
+    Description: "",
+    Supply: "",
+    BlockChian: "",
+  });
 
-  // handle drag events
-  const handleDrag = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+  // Update inputs value
+  const handleParam = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setQuery({ ...query, [name]: value });
   };
-
-  // triggers when file is dropped
-  const handleDrop = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    // setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      // handleFiles(e.dataTransfer.files);
-    }
-  };
-
-  // triggers when file is selected with click
-  const handleChange = function (e) {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      // handleFiles(e.target.files);
-    }
-  };
-
-  // triggers the input when the button is clicked
-  const onButtonClick = () => {
-    inputRef.current.click();
+  // Form Submit function
+  const formSubmit = () => {
+    console.log("Data", query);
   };
 
   return (
-    <form
-      id="form-file-upload"
-      onDragEnter={handleDrag}
-      onSubmit={(e) => e.preventDefault()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        id="input-file-upload"
-        multiple={true}
-        onChange={handleChange}
-      />
-      <label
-        id="label-file-upload"
-        htmlFor="input-file-upload"
-        className={dragActive ? "drag-active" : ""}
-      >
-        <div>
-          <p>Drag and drop your file here or</p>
-          <button className="upload-button" onClick={onButtonClick}>
-            Upload a file
-          </button>
-        </div>
-      </label>
-      {dragActive && (
-        <div
-          id="drag-file-element"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        ></div>
-      )}
-    </form>
+    <>
+      <Navbar />
+      <div className={style.Create}>
+        <h1>Create New Item</h1>
+        <Form className={style.form}>
+          <Form.Group>
+            <Form.Label>
+              <h3 className={style.Names}>Name</h3>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter Name"
+              name="_name"
+              value={query._name}
+              onChange={handleParam}
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>
+              <h3 className={style.Names}>External Link</h3>
+            </Form.Label>
+            <h6 className={style.names}>
+              Yogi's MarketPlace will include a link to this URL on this item's
+              detail page, so that users can click to learn more about it. You
+              are welcome to link to your own webpage with more details.
+            </h6>
+            <Form.Control
+              as="textarea"
+              placeholder="https://yoursite.io/item/123"
+              name="Link"
+              value={query.Link}
+              onChange={handleParam}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>
+              <h3 className={style.Names}>Description</h3>
+            </Form.Label>
+            <h6 className={style.names}>
+              The description will be included on the item's detail page
+              underneath its image. Markdown syntax is supported.
+            </h6>
+            <Form.Control
+              as="textarea"
+              placeholder="Provide Detailed Discription of Your Item"
+              rows={4}
+              name="Description"
+              value={query.Description}
+              onChange={handleParam}
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>
+              <h3 className={style.Names}>Supply</h3>
+            </Form.Label>
+            <h6 className={style.names}>
+              The number of items that can be minted. No gas cost to you!
+            </h6>
+            <Form.Control as="textarea" placeholder="Total Supply " />
+          </Form.Group>
+
+          <Form.Group>
+            <div>
+              <h1 className={style.Names}>BlockChian</h1>
+              <select className={style.chain}>
+                <option value="female">Ethereum</option>
+                <option value="female">Arbitrum</option>
+                <option value="male">Avalanche</option>
+                <option value="other">Klaytn</option>
+                <option value="other">Polygon</option>
+                <option value="other">Solana</option>
+              </select>
+            </div>
+          </Form.Group>
+          <Button className={style.primary} onClick={formSubmit}>
+            Submit
+          </Button>
+        </Form>
+      </div>
+    </>
   );
 };
 
