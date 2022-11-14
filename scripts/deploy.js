@@ -1,10 +1,11 @@
+const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
 async function main() {
   // signers = await ethers.getSigners();
 
   const ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
-  const myToken = await ERC20Token.deploy("1000");
+  const myToken = await ERC20Token.deploy(ethers.utils.parseEther("1000"));
   await myToken.deployed();
   console.log("ERC20Token deployed to:", myToken.address);
 

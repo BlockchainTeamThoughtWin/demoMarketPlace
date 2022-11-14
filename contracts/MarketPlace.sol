@@ -10,6 +10,8 @@ import  "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "contracts/mocks/interfaces/Iblacklist.sol";
 import "contracts/mocks/interfaces/IERC721Mint.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+
 
 contract MarketPlace is Initializable, OwnableUpgradeable {
     // Use OpenZeppelin's SafeMath library to prevent overflows.
@@ -18,6 +20,8 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     uint256 public platFormFeePercent; 
     // Scale is the number of digits to the right of the decimal point in a number. 
     uint256 public constant decimalPrecision = 100;
+    //set merkleRoot
+    bytes32 public merkleRoot;
     // interface for blacklist
     IblackList blacklist;
     // ============ Structs ============
@@ -45,7 +49,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         // Time that the auction should end,
         uint256 endTime;
     }
-
+        //Struct
     struct WinnerDetails {
         // The address will be owner of NFT after auction win
         address winnerAddress;
@@ -63,11 +67,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
      // All of the details of auction,
     event lazybuy(
         uint256 nonce,
+        address assetAddress,
         address seller,
         address buyer,
-        address assetAddress,
         uint256 tokenId
-
     );
 
     event lazy_Auction(
@@ -100,13 +103,23 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         platFormFeePercent = _newPlatFormFeePercent;
     }
 
+    function setMerkleRoot(bytes32 _root) public onlyOwner {
+        merkleRoot = _root;
+    }
+
+	function _checkValidity(address _address, bytes32[] calldata _merkleProof) internal view returns (bool){
+		bytes32 leafToCheck = keccak256(abi.encodePacked(_address));
+		return MerkleProof.verify(_merkleProof, merkleRoot, leafToCheck);
+	}
+  
    /**
      * @dev This function will use to mint NFT which have SellerDetails and signature genrated from frontend
      *@notice @notice This function will use to mint NFT which is created from frontend the redeemer redem this NFT by passing the required agrs
      *@param seller: the seller details provide all the necessary detail for the seller.
      */
-    function LazyBuy(SellerDetails calldata seller) external {
+    function LazyBuy(SellerDetails calldata seller, bytes32[] calldata _proof) external {
         require(blacklist._isPermitted(msg.sender), "MarketPlace: user is blacklisted");
+        require(_checkValidity(msg.sender, _proof), "ADDRESS_NOT_WHITELISTED");
         require(
             !isNonceProcessed[seller.nonce],
             "MarketPlace: nonce already process"
@@ -122,11 +135,6 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
 
         IERC721Mint instance = IERC721Mint(seller.nftAddress);
-
-        require(
-            instance.isApprovedForAll(seller.sellerAddress, address(this)),
-            "MarketPlace: address not approve"
-        );
 
         uint256 tokenId ;
          if (seller.tokenId != 0) {
@@ -168,7 +176,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
 
         require(
-            instance20.allowance(msg.sender, address(this)) >=
+            instance20.allowance(buyer, address(this)) >=
                 seller.amount,
             "MarketPlace: Check the token allowance."
         );
@@ -201,9 +209,9 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         
         emit lazybuy(
             seller.nonce,
+            seller.paymentAssetAddress,
             seller.sellerAddress,
             buyer,
-            seller.paymentAssetAddress,
             tokenId
         );
     }
@@ -246,25 +254,40 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
 
         // check user have nft mint access
         IERC721Mint instance = IERC721Mint(sellerDetails.nftAddress);
-        require(
-            instance.isApprovedForAll(sellerDetails.sellerAddress, address(this)),
-            "MarketPlace: address not approve"
-        );
-        uint256 tokenId = sellerDetails.tokenId;
-        if (tokenId == 1) {
+
+         uint256 tokenId ;
+         if (sellerDetails.tokenId != 0) {
+            require(
+                instance.isApprovedForAll(
+                    sellerDetails.sellerAddress,
+                    address(this)
+                ) || instance.getApproved(sellerDetails.tokenId) == address(this),
+                "MarketPlace: Collection must be approved."
+            );
+        // transfer the token to the redeemer
+            instance.transferFrom(sellerDetails.sellerAddress, winnerDetails.winnerAddress, sellerDetails.tokenId);
+
+            tokenId = sellerDetails.tokenId;
+        } else {
             tokenId = instance.mint(
                 sellerDetails.sellerAddress,
                 sellerDetails.royality,
                 sellerDetails.tokenUri
             );
-        }
+            require(
+                instance.isApprovedForAll(
+                    sellerDetails.sellerAddress,
+                    address(this)
+                ) || instance.getApproved(tokenId) == address(this),
+                "MarketPlace: Collection must be approved."
+            );
 
         instance.transferFrom(
             sellerDetails.sellerAddress,
             winnerDetails.winnerAddress,
             tokenId
         );
-
+        }
         // after nft is bided succesfully nft amount transfer to auctionCreator
         IERC20 instanceERC20 = IERC20(sellerDetails.paymentAssetAddress);
 
@@ -295,6 +318,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             tokenId,
             winnerDetails.amount
         );
+        
         uint256 remaining_amount = winnerDetails.amount;
         address handleStackDeepSeller = sellerDetails.sellerAddress;
         if (royaltyAmount > 0) {
@@ -318,7 +342,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         isNonceProcessed[sellerDetails.nonce] = true;
 
         emit lazy_Auction(
-            sellerDetails.tokenId,
+            tokenId,
             sellerDetails.nftAddress,
             sellerDetails.amount,
             winnerDetails.winnerAddress,
