@@ -3,21 +3,70 @@ import Button from "react-bootstrap/Button";
 import { connectors } from "functions/connectors.js";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
-import Favicon from "react-favicon";
+import { useState, useEffect } from "react";
 import style from "../styles/metaMask.module.css";
 
 function WalletConnection() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [currentChainId, setCurrentChainId] = useState();
+  const [ network, setNetwork ] = useState(undefined);
 
-  const { active, account, library, connector, activate, deactivate } =
+
+  const { active, chainId, account, library, connector, activate, deactivate } =
     useWeb3React();
+
+const toHex = (num) => {
+  const val = Number(num);
+  return "0x" + val.toString(16);
+};
+
+useEffect(() => {
+  if(typeof window !== "undefined" && !!window.ethereum){
+    window.ethereum.autoRefreshOnNetworkChange = false;
+    setCurrentChainId(window?.ethereum.chainId);
+  }
+})
+console.log("chainId: ", currentChainId);
+
+async function refreshState() {
+  window.localStorage.setItem("provider", undefined);
+  setNetwork("");
+};
+
+async function handelNetwork(e) {
+  const id = e.target.value;
+  setNetwork(Number(id));
+}
+console.log(">>>", chainId);
+
+async function switchNetwork() {
+    try {
+      if(parseInt(currentChainId) != 5) {
+        window?.ethereum.request ({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: toHex(5) }],
+        })
+        await activate(connectors.injected);
+      }
+      else{
+        debugger
+        await library?.provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: toHex(5) }]
+        });
+      }
+    } catch (error) {
+      
+    }
+}
 
   async function connect() {
     try {
+      currentChainId != toHex(5) && !active ? switchNetwork() :
       await activate(connectors.injected);
+      setProvider("injected");
     } catch (ex) {
       console.log(ex);
     }
@@ -26,6 +75,7 @@ function WalletConnection() {
   async function disconnect() {
     try {
       deactivate();
+      refreshState();
     } catch (ex) {
       console.log(ex);
     }
@@ -33,45 +83,29 @@ function WalletConnection() {
 
   async function walletConnect() {
     activate(connectors.walletConnect, undefined, true).catch((error) => {
-      if (error instanceof UnsupportedChainIdError) {
+      // if (error instanceof UnsupportedChainIdError) {
         activate(connectors.walletConnect);
-      } else {
-        console.log("Pending Error Occured");
-      }
+      // } else {
+      //   console.log("Pending Error Occured");
+      // }
     });
   }
 
-  return (
-    // <div className="flexflex-col items-center justify-center">
-    //   <button
-    //     onClick={connect}
-    //     className="py-2 nt-20 mb-4 text-lg font-bold text-white rounded-lg w-s6 bg-blue-600 hover:bg-blue-800"
-    //   >
-    //     Connect To MetaMask
-    //   </button>
-    //   {active ? (
-    //     <span>
-    //       Connected with <b> {account} </b>
-    //     </span>
-    //   ) : (
-    //     <span>Not Conneted</span>
-    //   )}
+  async function setProvider(type) {
+    window?.localStorage.setItem("provider", type);
+  }
 
-    //   <button
-    //     onClick={disconnect}
-    //     className="py-2 nt-20 mb-4 text-lg font-bold text-white rounded-lg w-s6 bg-blue-600 hover:bg-blue-800"
-    //   >
-    //     Disconnect
-    //   </button>
-    //   <button onClick={walletConnect}
-    //   className="py-2 nt-20 mb-4 text-lg font-bold text-white rounded-lg w-s6 bg-blue-600 hover:bg-blue-800">
-    //     Connect To WalletConnect
-    //     </button>
+  useEffect(() => {
+    const provider = window.localStorage.getItem("provider");
+    if (provider) activate(connectors[provider]);
+
+  }, []);
+
+  return (
     <div>
       <Button variant="primary" onClick={handleShow}>
         Create
       </Button>
-
       <Modal show={show} onHide={handleClose} className="metamask_button">
         <Modal.Header closeButton>
           <Modal.Title>
