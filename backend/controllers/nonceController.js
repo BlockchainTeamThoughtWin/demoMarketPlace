@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const nonceSchema = require('../models/nonceSchema');
+const nonceSchema = require('../model/nonceSchema');
 require('express');
 
 const set_nonce = async function (req, resp) {
@@ -18,6 +18,20 @@ const get_nonce = async function (req, res) {
     // console.log(req.params);
     try {
         const data = await nonceSchema.find();
+        res.json(data);
+    } catch (err) {
+        res.json({ message: err })
+        console.log('Error', err)
+
+    }
+}
+
+const get_by_nonce = async function (req, res) {
+    // const currentNonce = req.body.nonce
+    // console.log("currentNonce", currentNonce);
+    // console.log(req.params);
+    try {
+        const data = await nonceSchema.findOne();
         res.json(data);
     } catch (err) {
         res.json({ message: err })
@@ -67,5 +81,6 @@ const update_nonce = async function (req, res) {
 module.exports = {
     set_nonce,
     get_nonce,
+    get_by_nonce,
     update_nonce
 }
