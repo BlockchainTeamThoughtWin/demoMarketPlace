@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Form from "react-bootstrap/Form";
 import style from "../styles/create.module.css";
 import Button from "react-bootstrap/Button";
+import { CreateNFT } from "./api/apiCalls";
 
 const Create = () => {
   const [query, setQuery] = useState({
@@ -20,8 +21,9 @@ const Create = () => {
     setQuery({ ...query, [name]: value });
   };
   // Form Submit function
-  const formSubmit = () => {
+  const formSubmit = async () => {
     console.log("Data", query);
+    await CreateNFT(query);
   };
 
   return (
