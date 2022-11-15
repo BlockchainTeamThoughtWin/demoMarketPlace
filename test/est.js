@@ -49,38 +49,39 @@ describe("NFTCollection", async () => {
       let messageHash = ethers.utils.keccak256(message);
       let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
       
-      let message1 = ethers.utils.solidityPack(
-        ["address", "uint256", "uint256", "uint256"],
-        [buyer.address, NFTPrice+200, Block.timestamp + 111, Nonce]
-      );
-      let messageHash1 = ethers.utils.keccak256(message1);
-      let BuyerSign = await web3.eth.accounts.sign(messageHash1,BuyerPrivate);
+      // let message1 = ethers.utils.solidityPack(
+      //   ["address", "uint256", "uint256", "uint256"],
+      //   [buyer.address, NFTPrice+200, Block.timestamp + 111, Nonce]
+      // );
+      // let messageHash1 = ethers.utils.keccak256(message1);
+      // let BuyerSign = await web3.eth.accounts.sign(messageHash1,BuyerPrivate);
       
+      console.log("asnksn", buyer.address);
       // await myToken.transfer(buyer.address,1000000);
-      await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
-      await myToken.connect(buyer).approve(marketPlace.address,20000);
-      console.log("OLDSellerBal", await myToken.balanceOf(seller.address));
-      console.log("OLDBuyerBal", await myToken.balanceOf(buyer.address));
-      console.log("OLDMarketBal", await myToken.balanceOf(marketPlace.address));
+    //   await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
+    //   await myToken.connect(buyer).approve(marketPlace.address,20000);
+    //   console.log("OLDSellerBal", await myToken.balanceOf(seller.address));
+    //   console.log("OLDBuyerBal", await myToken.balanceOf(buyer.address));
+    //   console.log("OLDMarketBal", await myToken.balanceOf(marketPlace.address));
       
      
-      let SellerStruct = [Nonce,seller.address,erc721Token.address,myToken.address,0,Royality,NFTPrice,SellerSign.signature,"Demo",Block.timestamp,Block.timestamp + 100]
-      let BuyerStruct = [buyer.address,NFTPrice+200,BuyerSign.signature,Block.timestamp+111,Nonce];
-      let LazyAuction = await marketPlace.connect(buyer).lazyAuction(SellerStruct,BuyerStruct);
-        let CalculatedRoyality = (NFTPrice*PlatFee)/10000;
-        console.log("Royality",CalculatedRoyality);
+    //   let SellerStruct = [Nonce,seller.address,erc721Token.address,myToken.address,0,Royality,NFTPrice,SellerSign.signature,"Demo",Block.timestamp,Block.timestamp + 100]
+    //   let BuyerStruct = [buyer.address,NFTPrice+200,BuyerSign.signature,Block.timestamp+111,Nonce];
+    //   let LazyAuction = await marketPlace.connect(buyer).lazyAuction(SellerStruct,BuyerStruct);
+    //     let CalculatedRoyality = (NFTPrice*PlatFee)/10000;
+    //     console.log("Royality",CalculatedRoyality);
 
-        let CalPlatform = (NFTPrice*PlatFee)/10000;
-        console.log("PlatformFeee",CalPlatform); 
+    //     let CalPlatform = (NFTPrice*PlatFee)/10000;
+    //     console.log("PlatformFeee",CalPlatform); 
 
-        console.log("newSellerBal", await myToken.balanceOf(seller.address));
-        console.log("newBuyerBal", await myToken.balanceOf(buyer.address));
-        console.log("newMarketBal", await myToken.balanceOf(marketPlace.address));
+    //     console.log("newSellerBal", await myToken.balanceOf(seller.address));
+    //     console.log("newBuyerBal", await myToken.balanceOf(buyer.address));
+    //     console.log("newMarketBal", await myToken.balanceOf(marketPlace.address));
 
         
 
 
-    })
+    // })
 
     // it("Should put minted NFT on Auction",async  () => {
     //   let BlockNumber = await ethers.provider.getBlockNumber();
@@ -197,7 +198,7 @@ describe("NFTCollection", async () => {
     //                 Block.timestamp + 100,
     //               ]);
 
-    //             });
+                });
               
   })
 

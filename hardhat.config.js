@@ -15,7 +15,7 @@ task("accounts", "Prints accounts", async (_, { web3 }) => {
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
-
+  
   for (const account of accounts) {
     console.log(account.address);
   }
@@ -71,8 +71,8 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200,
-          },
+            runs: 200
+          }
         },
       },
       {
@@ -80,28 +80,24 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200,
-          },
+            runs: 200
+          }
         },
-      },
+      }
+
     ],
   },
 
-  networks: {
-    matic: {
+
+networks: {
+  matic: {
       url: process.env.ALCHEMY_POLYGON_URL,
-      accounts: [
-        process.env.PRIVATE_KEY,
-        process.env.PRIVATE_KEY1,
-        process.env.PRIVATE_KEY2,
-      ],
+      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2]
     },
   },
   etherscan: {
     apiKey: {
       polygonMumbai: '2MTPM72IFXXRE9UZ7X6Y56BVD2W6BRY2IK'
-    },
-  },
+    }
+  }
 };
-
-
