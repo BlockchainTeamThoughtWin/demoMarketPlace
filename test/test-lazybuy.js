@@ -184,7 +184,7 @@ describe("MarketPlace", () => {
       let oldBuyerBal = await myToken.balanceOf(add3.address);
       // console.log("oldSellBal", oldSellerBal);
       // console.log("oldBuyBal", oldBuyerBal);
-      console.log(add3.address);
+      // console.log(add3.address);
        await marketPlace.connect(seller).setMerkleRoot("0x9f29a6a5d033252d112ba1ecd215246354ca7488bacba05bb5678c6920a7e95b")
       await myToken.transfer(add3.address, nftPrice);
       // console.log("oldBuyBal",await myToken.balanceOf(add3.address));
@@ -227,7 +227,7 @@ describe("MarketPlace", () => {
       // console.log("CalculatedRoyality", calculatedRoyality);
 
       let newPlatFormBal = (nftPrice * plat) / 10000;
-      console.log("New PlatFormBal", newPlatFormBal);
+      // console.log("New PlatFormBal", newPlatFormBal);
 
       // let OlatFormBal = await my.balanceOf(marketPlace.address);
       // console.log("OLd PlatFormBal", OllatFormBal);
@@ -597,7 +597,7 @@ describe("MarketPlace", () => {
         .setApprovalForAll(marketPlace.address, true);
 
       await myToken.connect(add5).approve(marketPlace.address, 2000);
-      console.log(add5.address);
+   
 
       await expect(
         marketPlace
@@ -621,6 +621,51 @@ describe("MarketPlace", () => {
             "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f60"
           ])
       ).to.be.revertedWith("MarketPlace: user is blacklisted");
+    });
+    it("Should check user is whitelisted or not", async () => {
+      let black = await blacklist.AddRemoveBlacklist(add5.address);
+      let blockNumber = await ethers.provider.getBlockNumber();
+      let block = await ethers.provider.getBlock(blockNumber);
+      let nftPrice = 200;
+      let nonce = 9;
+      let message = ethers.utils.solidityPack(
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
+      );
+      let messageHash = ethers.utils.keccak256(message);
+      let sign = await web3.eth.sign(messageHash, seller.address);
+       await marketPlace.connect(seller).setMerkleRoot("0xfe998a20cc647938e07bd0bd67ab2ce9edc7aecc0e7e10a539d7a3abd5d09651")
+      await myToken.transfer(add5.address, 10000);
+
+      await erc721Token
+        .connect(seller)
+        .setApprovalForAll(marketPlace.address, true);
+
+      await myToken.connect(add5).approve(marketPlace.address, 2000);
+   
+
+      await expect(
+        marketPlace
+          .connect(add5)
+          .LazyBuy([
+            nonce,
+            seller.address,
+            erc721Token.address,
+            myToken.address,
+            0,
+            100,
+            nftPrice,
+            sign,
+            "test",
+            block.timestamp,
+            block.timestamp + 100,
+          ],[
+            "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
+            "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
+            "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6",
+            "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f67"
+          ])
+      ).to.be.revertedWith( "ADDRESS_NOT_WHITELISTED");
     });
   });
 });
