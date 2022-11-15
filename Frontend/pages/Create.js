@@ -12,6 +12,7 @@ const Create = () => {
     Description: "",
     Supply: "",
     BlockChian: "",
+    _token: "",
   });
 
   // Update inputs value
@@ -23,6 +24,8 @@ const Create = () => {
   // Form Submit function
   const formSubmit = async () => {
     console.log("Data", query);
+    const tokenId = 0;
+    query._token = tokenId;
     await CreateNFT(query);
   };
 
