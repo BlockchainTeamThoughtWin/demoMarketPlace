@@ -86,7 +86,7 @@ const create_nft_details = async function(req,res){
 
         console.log("nonceFromUI", nonceFromUI)
 
-        if (nonceFromUI != data1.nonce){
+        if (nonceFromUI != data1?.nonce){
             console.log("inside if");
             // const data = new nftDetailsSchema(req.body);
             // console.log("Creating New Entry with token ID: ",data.token_id);
