@@ -11,5 +11,6 @@ router.get('/:_id', AuctionController.get_post);
 
 router.delete('/:_id', AuctionController.delete_post);
 router.put('/:_id', AuctionController.put_post);
+router.patch('/:_id', AuctionController.put_post);
 
 module.exports = router;
