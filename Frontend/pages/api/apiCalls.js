@@ -7,7 +7,6 @@ export const getNFt = async () => {
 };
 
 export const CreateNFT = async (query) => {
-  debugger;
   console.log("form Data", query);
 
   axios({
@@ -18,16 +17,31 @@ export const CreateNFT = async (query) => {
     },
     data: query,
   })
-    .then((res) => {
-      res.json();
-      console.log("Data----------", res);
-    })
+    .then((res) => res.json())
     .catch((err) => {
       console.log(err);
     });
 };
 
-export const getNonce = async () =>{
-  const res  = await axios.get("http://localhost:8000/nonce");
-  return res;
+export const getNonce = async () => {
+  const respose = await axios.get("http://localhost:8000/nonce")
+  return respose;
 }
+
+export const CreateNonce = async (nonce) => {
+  // console.log("form Data", query);
+
+  axios({
+    url: "http://localhost:8000/nonce",
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: nonce,
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log(err);
+    });
+};
+

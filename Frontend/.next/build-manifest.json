@@ -20,6 +20,11 @@
       "static/chunks/main.js",
       "static/chunks/pages/Create.js"
     ],
+    "/[tokenID]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/[tokenID].js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

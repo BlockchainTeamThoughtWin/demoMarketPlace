@@ -9,18 +9,22 @@ import { getNonce, CreateNonce} from "./api/apiCalls";
 
 
 const Create = () => {
- 
   useEffect(() => {
     Nonce();
   }, []);
 
+  let currentNonce,  updatedNonce ;
   const Nonce =  async() => {
     
-  const oldNonce = await getNonce();
-    console.log("Nonce", oldNonce);
-    const updateNonce = oldNonce.data[0].nonce +1;
-    query.nonce = updateNonce;
+   currentNonce = await getNonce();
+  debugger
   
+  updatedNonce = currentNonce?.data[0].nonce +1;
+  currentNonce =currentNonce?.data[0].nonce;
+ query.nonce = updatedNonce;
+ query.currentNonce = currentNonce;
+
+
 
  }
  
@@ -31,10 +35,9 @@ const Create = () => {
     Supply: "",
     BlockChain: "",
     token_id: "",
-    nonce: "",
-    
+    owner_address:"",
   });
-
+console.log(currentNonce?.data[0].nonce)
   // Update inputs value
   const handleParam = (e) => {
     const name = e.target.name;

@@ -1,7 +1,7 @@
-// Import Swiper React components
+ // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import { getNFt } from "../pages/api/getNFT";
+import { getNFt } from "../pages/api/apiCalls.js";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,19 +10,26 @@ import "swiper/css/scrollbar";
 
 // Import Swiper styles
 import "swiper/css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default () => {
-  const callNFts = async () => {
-    const data = await getNFt();
-    console.log("data is ", data);
-  };
+import React from "react";
+
+const CardsSlider = () => {
+  const [fromdata, setFormData] = useState([]);
 
   useEffect(() => {
     callNFts();
   }, []);
 
-  return (
+  const callNFts = async () => {
+    const data = await getNFt();
+    const res = data.data;
+    console.log("Response", res);
+    setFormData(res);
+  };
+
+  return(  
+  <>
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
       spaceBetween={50}
@@ -30,28 +37,31 @@ export default () => {
       navigation
       onSlideChange={() => console.log("slide change")}
       onSwiper={(swiper) => console.log(swiper)}
-    >
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
+      >
+      {
+        fromdata.length > 0 && fromdata?.map((item) => (
+          <>
+          <SwiperSlide>
+        {/* <img src={item?.uri} width="80%" height="80%"/> */}
+        <h3>{
+          item?._name
+        }</h3>
+          <h1>dsfdsfddsfsf</h1>
+
+
       </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
-      <SwiperSlide>
-        <img src="/Nft.jpg" width="80%" height="80%"></img>
-      </SwiperSlide>
+          </>
+
+))
+}
+      
     </Swiper>
-  );
+      <h1>
+        fsdfdsfdsf
+      </h1>
+  
+</>
+  )
 };
+
+export default CardsSlider;
