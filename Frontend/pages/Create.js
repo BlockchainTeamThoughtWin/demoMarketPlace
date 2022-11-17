@@ -1,19 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import Navbar from "../components/Navbar";
 import Form from "react-bootstrap/Form";
 import style from "../styles/create.module.css";
 import Button from "react-bootstrap/Button";
 import { CreateNFT } from "./api/apiCalls";
+import { getNonce, CreateNonce} from "./api/apiCalls";
+
+
 
 const Create = () => {
+ 
+  useEffect(() => {
+    Nonce();
+  }, []);
+
+  const Nonce =  async() => {
+    
+  const oldNonce = await getNonce();
+    console.log("Nonce", oldNonce);
+    const updateNonce = oldNonce.data[0].nonce +1;
+    query.nonce = updateNonce;
+  
+
+ }
+ 
   const [query, setQuery] = useState({
     _name: "",
     Link: "",
     Description: "",
     Supply: "",
-    BlockChian: "",
-    _token: "",
+    BlockChain: "",
+    token_id: "",
     nonce: "",
+    
   });
 
   // Update inputs value
@@ -24,13 +43,14 @@ const Create = () => {
   };
   // Form Submit function
   const formSubmit = async () => {
+    debugger
+    
     console.log("Data", query);
     const tokenId = 0;
-    const _nonce = 1;
-    query.nonce = _nonce;
-    query._token = tokenId;
+    // query.nonce = increaseNonce;
+    query.token_id = tokenId;
+  
     await CreateNFT(query);
-    _nonce++;
   };
 
   return (

@@ -26,3 +26,8 @@ export const CreateNFT = async (query) => {
       console.log(err);
     });
 };
+
+export const getNonce = async () =>{
+  const res  = await axios.get("http://localhost:8000/nonce");
+  return res;
+}
