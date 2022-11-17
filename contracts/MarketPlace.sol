@@ -98,29 +98,29 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     }
 
     // ============ modifier ============
-    modifier _Check(SellerDetails calldata seller){
-        _CheckBalance(seller);
+    modifier _CheckBalAllo(address _paymentAssetAddress, address _address, uint256 _amount){
+        _CheckBalance(_paymentAssetAddress, _address, _amount);
         _;
-        _TokenAllowance(seller);
+        _TokenAllowance(_paymentAssetAddress, _address, _amount);
     }
 
     // ============ Custom Methods ============
-    function _CalculatedPlatFormFee(SellerDetails calldata seller) internal view _Check(seller) returns(uint256){
-        uint256 feeOnPlatForm = (seller.amount).mul(platFormFeePercent).div(decimalPrecision).div(100);
+    function _CalculatedPlatFormFee(address _paymentAssetAddress, address _address, uint256 _amount) internal view _CheckBalAllo(_paymentAssetAddress, _address, _amount) returns(uint256){
+        uint256 feeOnPlatForm = (_amount).mul(platFormFeePercent).div(decimalPrecision).div(100);
         return feeOnPlatForm;
     }
 
-    function _CheckBalance(SellerDetails calldata seller) internal view{
+    function _CheckBalance(address _paymentAssetAddress, address _address, uint256 _amount) internal view{
         require(
-            IERC20(seller.paymentAssetAddress).balanceOf(msg.sender) >= seller.amount,
+            IERC20(_paymentAssetAddress).balanceOf(_address) >= _amount,
             "MarketPlace: Insufficient Amount"
         );
     }
 
-    function _TokenAllowance(SellerDetails calldata seller) internal view {
+    function _TokenAllowance(address _paymentAssetAddress, address _address, uint256 _amount) internal view {
         require(
-            IERC20(seller.paymentAssetAddress).allowance(msg.sender, address(this)) >=
-                seller.amount,
+            IERC20(_paymentAssetAddress).allowance(_address, address(this)) >=
+                _amount,
             "MarketPlace: Check the token allowance."
         );
     }
@@ -152,7 +152,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         return tokenId;
     }
 
-    function _CalculatedRoyality(SellerDetails calldata seller, uint256 _tokenId) internal view returns(address, uint256){
+    function CalculatedRoyality(SellerDetails calldata seller, uint256 _tokenId) internal view returns(address, uint256){
         return IERC2981(seller.nftAddress).royaltyInfo( _tokenId, seller.amount);
     }
 
@@ -185,10 +185,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         IERC20 instance20 = IERC20(seller.paymentAssetAddress);
         uint256 remaining_amount = seller.amount;
 
-        instance20.transferFrom(msg.sender, address(this), _CalculatedPlatFormFee(seller)); //transfer PlatformFee
-        remaining_amount -= _CalculatedPlatFormFee(seller);
+        instance20.transferFrom(msg.sender, address(this), _CalculatedPlatFormFee(seller.paymentAssetAddress, seller.sellerAddress, seller.amount)); //transfer PlatformFee
+        remaining_amount -= _CalculatedPlatFormFee(seller.paymentAssetAddress, seller.sellerAddress, seller.amount);
 
-        (address receiver, uint256 royaltyAmount) = _CalculatedRoyality(seller, tokenId);
+        (address receiver, uint256 royaltyAmount) = CalculatedRoyality(seller, tokenId);
         if (royaltyAmount > 0) {
             if (seller.sellerAddress != receiver) {
                 instance20.transferFrom(msg.sender, receiver, royaltyAmount);
@@ -245,11 +245,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         IERC20 instanceERC20 = IERC20(seller.paymentAssetAddress);
         uint256 remaining_amount = winnerDetails.amount;
 
-        uint256 platFormFee = (winnerDetails.amount.mul(platFormFeePercent)).div(10000);
-        instanceERC20.transferFrom( winnerDetails.winnerAddress, address(this), platFormFee);
-        remaining_amount -= platFormFee;
+        instanceERC20.transferFrom( winnerDetails.winnerAddress, address(this), _CalculatedPlatFormFee(seller.paymentAssetAddress, winnerDetails.winnerAddress, seller.amount));
+        remaining_amount -= _CalculatedPlatFormFee(seller.paymentAssetAddress, winnerDetails.winnerAddress, seller.amount);
 
-        (address receiver, uint256 royaltyAmount) = _CalculatedRoyality(seller, tokenId);
+        (address receiver, uint256 royaltyAmount) = CalculatedRoyality(seller, tokenId);
         if (royaltyAmount > 0) {
             if (seller.sellerAddress != receiver) {
                 instanceERC20.transferFrom(
@@ -368,4 +367,3 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     receive() external payable {}
     
 }
-
