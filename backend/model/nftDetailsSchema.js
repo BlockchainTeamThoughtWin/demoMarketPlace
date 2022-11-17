@@ -17,11 +17,13 @@ const nftDetailsSchema = new mongoose.Schema({
   token_id: {
     type: Number,
   },
-  BlockChian: {
+  BlockChain: {
     type: String,
   },
   nonce: {
-    type: Number,
+    type:Number,
+    index:true,
+    default:0,
     unique: true,
   },
   seller_address: {

@@ -67,10 +67,11 @@ const get_nft_details = async function(req,res){
 
 const create_nft_details = async function(req,res){
     try{
-        let nonceFromUI = req.body.nonce
+        let CurrentNonceFromUI = req.body.nonceCurrent
+        let UpdatedNonceFromUI = req.body.nonceUpdate
         console.log("noncefromUi is >>>>>",nonceFromUI);
 
-        let data1 = await nftDetailsSchema.findOne({nonce : nonceFromUI});
+        let data1 = await nftDetailsSchema.findOne({nonce : UpdatedNonceFromUI});
         console.log("Data1 is",data1);
         
         // await nftDetailsSchema.remove();
@@ -84,9 +85,9 @@ const create_nft_details = async function(req,res){
         //     console.log("<<<<");
         // }
 
-        console.log("nonceFromUI", nonceFromUI)
+        console.log("UpdatedNonceFromUI", UpdatedNonceFromUI)
 
-        if (nonceFromUI != data1?.nonce){
+        if (data1.nonce === null){
             console.log("inside if");
             // const data = new nftDetailsSchema(req.body);
             // console.log("Creating New Entry with token ID: ",data.token_id);
@@ -96,7 +97,7 @@ const create_nft_details = async function(req,res){
 
             res.send(result);
         }
-        else if(nonceFromUI == data1.nonce){
+        else if(UpdatedNonceFromUI == data1.nonce){
             console.log("Inside else if");
             
             const data = await nftDetailsSchema.updateMany(
@@ -104,10 +105,9 @@ const create_nft_details = async function(req,res){
                 {
                     $set:req.body
                 }
-
             );
             console.log("Update from existing data.",data);
-
+            update_nonce(req.cruerntNonce,req.updatedNonce)
             res.send(data);
         }
 
