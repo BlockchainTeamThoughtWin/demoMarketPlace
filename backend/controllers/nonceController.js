@@ -21,8 +21,8 @@ const get_nonce = async function(req,res){
         let data = await nonceSchema.find();
         console.log(data,"data");
         if (data.length<1){
-        data = nonceSchema.create({nonce : 0});
-        console.log("data",data);
+            data = nonceSchema.create({nonce : 0});
+            console.log("data",data);
         }
         res.send(data);
     }catch (err) {
@@ -34,9 +34,9 @@ const get_nonce = async function(req,res){
 
 const update_nonce = async function(req,res){
 
-    let currentNonce = nonceSchema.findOne(req.currentNonce)
-    res.nonce =req.body.updatedNonce
-    res.save()
+    let nonceData = nonceSchema.findOne(req.currentNonce);
+    nonceData.nonce =req.body.updatedNonce;
+    nonceData.save();
     
 };
 

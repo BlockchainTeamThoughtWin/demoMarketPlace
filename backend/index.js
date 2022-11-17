@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const axios = require("axios");
+// const axios = require("axios");
 
 const AuctionRoute = require("./routes/AuctionDetailsRoutes");
 const BidderRoute = require("./routes/BidderDetailRoutes");
