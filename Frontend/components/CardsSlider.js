@@ -56,9 +56,7 @@ const CardsSlider = () => {
 }
       
     </Swiper>
-      <h1>
-        fsdfdsfdsf
-      </h1>
+    
   
 </>
   )

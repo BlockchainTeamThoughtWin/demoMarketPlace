@@ -17,12 +17,12 @@ export default function Home() {
         <h1 className={styles.Explore}>Explore, collect, and sell NFTs</h1>
       </div>
       
-      {/* <HomeTable /> */}
+      <HomeTable />
       <CardsSlider />
 
-{/* 
+
       <NotableCollections />
-      <Dreamersspotlight /> */}
+      <Dreamersspotlight />
     </>
   );
 }
