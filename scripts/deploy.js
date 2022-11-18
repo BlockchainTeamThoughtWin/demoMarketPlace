@@ -4,10 +4,10 @@ const hre = require("hardhat");
 async function main() {
   // signers = await ethers.getSigners();
 
-  const ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
-  const myToken = await ERC20Token.deploy(ethers.utils.parseEther("1000"));
-  await myToken.deployed();
-  console.log("ERC20Token deployed to:", myToken.address);
+  const Hawks = await hre.ethers.getContractFactory("Hawks");
+  const hawks = await Hawks.deploy();
+  await hawks.deployed();
+  console.log("Hawks deployed to:", hawks.address);
 
 
     // BlackList
@@ -38,11 +38,11 @@ async function main() {
   console.log("Address:", marketPlace.address);
   console.log("Address:", address);
 
-  await hre.run("verify:verify", {
-    address: address,
-    contract: "contracts/MarketPlace.sol:MarketPlace",
-    constructorArguments: []
-  });
+  // await hre.run("verify:verify", {
+  //   address: address,
+  //   contract: "contracts/MarketPlace.sol:MarketPlace",
+  //   constructorArguments: []
+  // });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
