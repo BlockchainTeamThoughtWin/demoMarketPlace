@@ -32,6 +32,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         address paymentAssetAddress;
         // TokenId specify to uniquely identify the NFT
         uint256 tokenId;
+        //The Value Royality
         uint96 royality;
         // The value of the current highest bid.
         uint256 amount;
@@ -57,7 +58,6 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         // number(nonce) always used once 
         uint256 nonce;
     }
-
     // ============ Events ============
      // All of the details of auction,
     event lazybuy(
@@ -83,12 +83,14 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     );
     // A mapping to check nonce processed or not.
     mapping(uint256 => bool) public isNonceProcessed; //mapping for nonce.
+
     // ============ initialization ============
     function initialize(IblackList _blacklistAddress) public initializer {
         __Ownable_init();
         platFormFeePercent = 250;
         blacklist = _blacklistAddress;
     }
+ 
     // ============ Set brokrage percent ============
     function setPlatFormFeePercent(uint256 _newPlatFormFeePercent)
         public
@@ -96,6 +98,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     {
         platFormFeePercent = _newPlatFormFeePercent;
     }
+
    /**
      * @dev This function will use to mint NFT which have SellerDetails and signature genrated from frontend
      *@notice @notice This function will use to mint NFT which is created from frontend the redeemer redem this NFT by passing the required agrs
@@ -118,7 +121,14 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
 
         IERC721Mint instance = IERC721Mint(seller.nftAddress);
-        if (seller.tokenId != 1) {
+
+        require(
+            instance.isApprovedForAll(seller.sellerAddress, address(this)),
+            "MarketPlace: address not approve"
+        );
+
+        uint256 tokenId ;
+         if (seller.tokenId != 0) {
             require(
                 instance.isApprovedForAll(
                     seller.sellerAddress,
@@ -128,13 +138,14 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             );
         // transfer the token to the redeemer
             instance.transferFrom(seller.sellerAddress, buyer, seller.tokenId);
+
+            tokenId = seller.tokenId;
         } else {
-            uint256 tokenId = instance.mint(
+            tokenId = instance.mint(
                 seller.sellerAddress,
                 seller.royality,
                 seller.tokenUri
             );
-
             require(
                 instance.isApprovedForAll(
                     seller.sellerAddress,
@@ -142,31 +153,32 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
                 ) || instance.getApproved(tokenId) == address(this),
                 "MarketPlace: Collection must be approved."
             );
-        // transfer the token to the redeemer
-            instance.transferFrom(seller.sellerAddress, buyer, seller.tokenId);
-        }
 
+        // transfer the token to the redeemer
+        instance.transferFrom(seller.sellerAddress, buyer, tokenId);
+        }
         //fund transfer
         IERC20 instance20 = IERC20(seller.paymentAssetAddress);
+
         // make sure that the redeemer is paying enough to cover the buyer's cost
         require(
             instance20.balanceOf(buyer) >= seller.amount,
             "MarketPlace: Insufficient Amount"
         );
-        // make sure that the redeemer is paying enough to cover the buyer's cost
+
         require(
-            instance20.allowance(buyer, address(this)) >= seller.amount,
+            instance20.allowance(msg.sender, address(this)) >=
+                seller.amount,
             "MarketPlace: Check the token allowance."
         );
-        
-        //
+
         uint256 feeOnPlatForm = (seller.amount).mul(platFormFeePercent).div(decimalPrecision).div(100);
 
         instance20.transferFrom(buyer, address(this), feeOnPlatForm);
 
         IERC2981 RoyaltyInfo = IERC2981(seller.nftAddress);
         (address receiver, uint256 royaltyAmount) = RoyaltyInfo.royaltyInfo(
-            seller.tokenId,
+            tokenId,
             seller.amount
         );
 
@@ -191,9 +203,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             seller.sellerAddress,
             buyer,
             seller.paymentAssetAddress,
-            seller.tokenId
+            tokenId
         );
     }
+
     // ============ Create Auction ============
     /**
      * @dev This method allows authorised users to MINT/SELL the NFT through lazyAuction.
@@ -236,21 +249,39 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             instance.isApprovedForAll(sellerDetails.sellerAddress, address(this)),
             "MarketPlace: address not approve"
         );
-        uint256 tokenId = sellerDetails.tokenId;
-        if (tokenId == 1) {
+         uint256 tokenId ;
+         if (sellerDetails.tokenId != 0) {
+            require(
+                instance.isApprovedForAll(
+                    sellerDetails.sellerAddress,
+                    address(this)
+                ) || instance.getApproved(sellerDetails.tokenId) == address(this),
+                "MarketPlace: Collection must be approved."
+            );
+        // transfer the token to the redeemer
+            instance.transferFrom(sellerDetails.sellerAddress, winnerDetails.winnerAddress, sellerDetails.tokenId);
+
+            tokenId = sellerDetails.tokenId;
+        } else {
             tokenId = instance.mint(
                 sellerDetails.sellerAddress,
                 sellerDetails.royality,
                 sellerDetails.tokenUri
             );
-        }
+            require(
+                instance.isApprovedForAll(
+                    sellerDetails.sellerAddress,
+                    address(this)
+                ) || instance.getApproved(tokenId) == address(this),
+                "MarketPlace: Collection must be approved."
+            );
 
         instance.transferFrom(
             sellerDetails.sellerAddress,
             winnerDetails.winnerAddress,
             tokenId
         );
-
+        }
         // after nft is bided succesfully nft amount transfer to auctionCreator
         IERC20 instanceERC20 = IERC20(sellerDetails.paymentAssetAddress);
 
@@ -304,7 +335,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         isNonceProcessed[sellerDetails.nonce] = true;
 
         emit lazy_Auction(
-            sellerDetails.tokenId,
+            tokenId,
             sellerDetails.nftAddress,
             sellerDetails.amount,
             winnerDetails.winnerAddress,

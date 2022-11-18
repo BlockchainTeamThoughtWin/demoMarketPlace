@@ -228,8 +228,8 @@
       ]
     },
     "/Users/dr.mac/Documents/MarketPlace2/contracts/MarketPlace.sol": {
-      "lastModificationDate": 1666770274806,
-      "contentHash": "8bcd2a6068d22d03a817e10beb9d764c",
+      "lastModificationDate": 1668496847668,
+      "contentHash": "709efa18f25fcc58be69626f5e473936",
       "sourceName": "contracts/MarketPlace.sol",
       "solcConfig": {
         "version": "0.8.4",
