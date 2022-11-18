@@ -8,5 +8,7 @@ router.get('/', UserVerificationController.get_user_verification);
 // router.get('/signature', UserVerificationController.get_user_verification);
 router.delete('/:_id', UserVerificationController.delete_user_verification);
 router.put('/:_id', UserVerificationController.update_user_verification);
+router.patch('/:_id', UserVerificationController.update_user_verification);
+
 
 module.exports = router;

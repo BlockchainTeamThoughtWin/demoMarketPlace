@@ -14,7 +14,6 @@ chai.use(chaiHttp);
 //             done();
 //         });
 //     });
-//});
 
 
 describe('/GET history', () => {

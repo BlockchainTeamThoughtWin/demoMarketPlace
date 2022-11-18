@@ -35,25 +35,25 @@ exports.create_user_verification = async function(req,resp){
 exports.get_user_verification = async function(req,resp){
 
     const data = await userVerificationSchema.find();
-    console.log(data,"data<><><><><>");
-    const signer = await web3.eth.accounts.recover(req.body.nonce,req.body.signature);
-    console.log(signer,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    let data1 ;
-    if (signer == req.body.user_address){
-        data1  = "verified user"
-        console.log(data1);
-    }
-    else{
-        data1 = "Beep Beep you are not authenticate user."
-        console.log(data1);
-    }
+    // console.log(data,"data<><><><><>");
+    // const signer = await web3.eth.accounts.recover(req.body.nonce,req.body.signature);
+    // console.log(signer,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    // let data1 ;
+    // if (signer == req.body.user_address){
+    //     data1  = "verified user"
+    //     console.log(data1);
+    // }
+    // else{
+    //     data1 = "Beep Beep you are not authenticate user."
+    //     console.log(data1);
+    // }
 
     // const result = data.map(x => x.hash);
    
     // console.log("result",typeof(req.body.user_address), "dsisnd",typeof(signer));
 
     // console.log("SDafdaa",hash);
-    resp.send(data1);
+    resp.send(data);
 };
 
 exports.delete_user_verification = async function(req,resp){

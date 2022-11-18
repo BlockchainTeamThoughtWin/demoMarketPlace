@@ -21,7 +21,9 @@
     "web3": "^1.8.0"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "chai": "^4.3.7",
+    "hardhat": "^2.12.2",
     "mocha": "^10.1.0",
     "should": "^13.2.3",
     "supertest": "^6.3.0"

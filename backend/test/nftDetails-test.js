@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let NFTDetails = require('../model/nftDetailsSchema');
+
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../index.js');
@@ -67,12 +68,13 @@ describe('/GET NFT Details', () => {
 describe("/POST NFT Details", () => {
     it("Should Post a NFT Details", (done) => {
         let nftdetails = {
-            nft__name: "Saloni",
-            nft__Description: "NFTDescription",
-            uri: "hello",
+            _name: "Saloni",
+            Link: "http://abc.com",
+            Description: "NFTDescription",
+            Supply: 5,
             token_id: 2,
-            collection_address: "abcd23edfwew23ed",
-            nonce: 3,
+            BlockChain: "Ethereum",
+            nonce: 1,
             seller_address: "abcd1234",
             owner_address: "qweeert54321",
             sale_amount: 200,
@@ -82,11 +84,10 @@ describe("/POST NFT Details", () => {
             royalty: 20,
             Imguri: "img",
             saleType: "bidauction",
-            external_link: "http://abc.com",
-            supply: 5,
             starting_amount: 300,
             reserve_amount: 250,
-            decline_amount: 150
+            decline_amount: 150,
+            price: 500
         };
         chai.request('http://localhost:8000/nftdetails')
             .post('/')

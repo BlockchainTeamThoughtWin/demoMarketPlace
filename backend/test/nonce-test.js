@@ -15,7 +15,6 @@ chai.use(chaiHttp);
 //       done();
 //     });
 //   });
-// });
 
 /*
   * Test the /GET route
@@ -90,5 +89,6 @@ describe('/Put/:nonce', () => {
       });
   });
 });
+// });
 
 

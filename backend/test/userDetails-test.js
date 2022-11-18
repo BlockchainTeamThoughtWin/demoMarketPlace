@@ -14,7 +14,7 @@ chai.use(chaiHttp);
 //             done();
 //         });
 //     });
-// });
+
 
 describe('/GET Details', () => {
     it("Should get user details", (done) => {
@@ -95,11 +95,4 @@ describe("/DELETE/:id", () => {
             });
     });
 });
-
-
-
-
-
-
-
-
+// });
