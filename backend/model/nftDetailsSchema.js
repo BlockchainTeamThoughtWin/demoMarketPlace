@@ -22,7 +22,7 @@ const nftDetailsSchema = new mongoose.Schema({
   },
   nonce: {
     type:Number,
-    index:true,
+    // index:true,
     default:0,
   },
   seller_address: {
