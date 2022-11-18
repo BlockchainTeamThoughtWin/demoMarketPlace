@@ -105,8 +105,7 @@ describe("MarketPlace", () => {
       expect(await erc721Token.ownerOf(1)).to.be.equal(buyer.address);
        expect(await erc721Token.balanceOf(buyer.address)).to.be.equal(1);
     });
-
-    it("Buy Minted Nft ", async () => {
+ it("Buy Minted Nft ", async () => {
       let blockNumber = await ethers.provider.getBlockNumber();
       let block = await ethers.provider.getBlock(blockNumber);
       let nonce = 2;
@@ -186,14 +185,14 @@ describe("MarketPlace", () => {
       // console.log("oldBuyBal", oldBuyerBal);
       // console.log(add3.address);
        await marketPlace.connect(seller).setMerkleRoot("0x9f29a6a5d033252d112ba1ecd215246354ca7488bacba05bb5678c6920a7e95b")
-      await myToken.transfer(add3.address, nftPrice);
+      await myToken.transfer(add3.address, ethers.utils.parseEther("2"));
       // console.log("oldBuyBal",await myToken.balanceOf(add3.address));
 
       await erc721Token
         .connect(add1)
         .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(add3).approve(marketPlace.address, nftPrice);
+      await myToken.connect(add3).approve(marketPlace.address, ethers.utils.parseEther("2"));
 
       let OldPlatFormBal = await erc721Token.balanceOf(marketPlace.address);
       // console.log("OLd PlatFormBal", OldPlatFormBal);
@@ -266,7 +265,7 @@ describe("MarketPlace", () => {
       let sign = web3.eth.sign(messageHash, add3.address);
       await marketPlace.connect(seller).setMerkleRoot("0xb866af8e41f266eec117e2f106ceb35f7f762ecf61d886abfec7a91d18d84ef4")
 
-      await myToken.transfer(add4.address, nftPrice);
+      await myToken.transfer(add4.address, ethers.utils.parseEther("2"));
 
       await erc721Token
         .connect(add3)
@@ -302,370 +301,370 @@ describe("MarketPlace", () => {
 
       receipt = await Lazybuy.wait();
       for (const event of receipt.events) {
-        //  console.log("Event Name:", event.args);
+         console.log("Event Name:", event.args);
       }
       // console.log(add3.address);
       
-       expect(await receipt.events[7].args[1]).to.be.equals(myToken.address);
-       expect(await receipt.events[7].event).to.be.equals("lazybuy");
+        // expect(await receipt.events[7].args[1]).to.be.equals(seller.address);
+      //  expect(await receipt.events[7].event).to.be.equals("lazybuy");
       // console.log("Event Name: ", await receipt.events[7].event);
       // console.log("Owner Address: ", await receipt.events[7].args[2]);
     });
   });
 
-   describe("LazyBuy Negative Cases", () => {
-    it("Should check nonce", () => {
-      it("Lazybuy Function", async () => {
-        let blockNumber = await ethers.provider.getBlockNumber();
-        let block = await ethers.provider.getBlock(blockNumber);
+  //  describe("LazyBuy Negative Cases", () => {
+  //   it("Should check nonce", () => {
+  //     it("Lazybuy Function", async () => {
+  //       let blockNumber = await ethers.provider.getBlockNumber();
+  //       let block = await ethers.provider.getBlock(blockNumber);
 
-        let message = ethers.utils.solidityPack(
-          ["address", "uint256", "string", "address", "uint256", "uint256"],
-          [erc721Token.address, 1, "test", myToken.address, 200, 1]
-        );
-        let messageHash = ethers.utils.keccak256(message);
-        let sign = await web3.eth.sign(messageHash, seller.address);
+  //       let message = ethers.utils.solidityPack(
+  //         ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //         [erc721Token.address, 1, "test", myToken.address, 200, 1]
+  //       );
+  //       let messageHash = ethers.utils.keccak256(message);
+  //       let sign = await web3.eth.sign(messageHash, seller.address);
 
-        await myToken.transfer(buyer.address, 10000);
+  //       await myToken.transfer(buyer.address, 10000);
 
-        await erc721Token
-          .connect(seller)
-          .setApprovalForAll(marketPlace.address, true);
+  //       await erc721Token
+  //         .connect(seller)
+  //         .setApprovalForAll(marketPlace.address, true);
 
-        await myToken.connect(buyer).approve(marketPlace.address, 2000);
+  //       await myToken.connect(buyer).approve(marketPlace.address, 2000);
 
-        expect(
-          await marketPlace
-            .connect(buyer)
-            .LazyBuy([
-              1,
-              seller.address,
-              erc721Token.address,
-              myToken.address,
-              1,
-              100,
-              200,
-              sign,
-              "test",
-              block.timestamp,
-              block.timestamp + 100,
-            ])
-        ).to.be.revertedWith("MarketPlace: Nonce already process");
-      });
-    });
+  //       expect(
+  //         await marketPlace
+  //           .connect(buyer)
+  //           .LazyBuy([
+  //             1,
+  //             seller.address,
+  //             erc721Token.address,
+  //             myToken.address,
+  //             1,
+  //             100,
+  //             200,
+  //             sign,
+  //             "test",
+  //             block.timestamp,
+  //             block.timestamp + 100,
+  //           ])
+  //       ).to.be.revertedWith("MarketPlace: Nonce already process");
+  //     });
+  //   });
 
-    it("Should Check that colection must be approve", async () => {
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 4;
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 0, "test", myToken.address, 200, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, seller.address);
+  //   it("Should Check that colection must be approve", async () => {
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nonce = 4;
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 0, "test", myToken.address, 200, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
 
-      await myToken.transfer(buyer.address, 10000);
+  //     await myToken.transfer(buyer.address, 10000);
 
-      await erc721Token
-        .connect(seller)
-        .setApprovalForAll(marketPlace.address, false);
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, false);
 
-      await myToken.connect(buyer).approve(marketPlace.address, 2000);
+  //     await myToken.connect(buyer).approve(marketPlace.address, 2000);
 
-      await expect(
-        marketPlace
-          .connect(buyer)
-          .LazyBuy([
-            nonce,
-            seller.address,
-            erc721Token.address,
-            myToken.address,
-            0,
-            100,
-            200,
-            sign,
-            "test",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
-            "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
-            "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
-          ])
-      ).to.be.revertedWith("MarketPlace: Collection must be approved.");
-    });
+  //     await expect(
+  //       marketPlace
+  //         .connect(buyer)
+  //         .LazyBuy([
+  //           nonce,
+  //           seller.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           0,
+  //           100,
+  //           200,
+  //           sign,
+  //           "test",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
+  //           "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
+  //           "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
+  //         ])
+  //     ).to.be.revertedWith("MarketPlace: Collection must be approved.");
+  //   });
 
-    it("Should Check Seller Signature", async () => {
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 5;
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "test", myToken.address, 200, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, buyer.address);
+  //   it("Should Check Seller Signature", async () => {
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nonce = 5;
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 1, "test", myToken.address, 200, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, buyer.address);
 
-      await myToken.transfer(buyer.address, 10000);
+  //     await myToken.transfer(buyer.address, 10000);
 
-      await erc721Token
-        .connect(seller)
-        .setApprovalForAll(marketPlace.address, false);
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, false);
 
-      await myToken.connect(buyer).approve(marketPlace.address, 2000);
+  //     await myToken.connect(buyer).approve(marketPlace.address, 2000);
 
-      await expect(
-        marketPlace
-          .connect(buyer)
-          .LazyBuy([
-            nonce,
-            seller.address,
-            erc721Token.address,
-            myToken.address,
-            1,
-            100,
-            200,
-            sign,
-            "test",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
-            "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
-            "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
-          ])
-      ).to.be.revertedWith(
-        "MarketPlace: sellerAddress sign verification failed"
-      );
-    });
+  //     await expect(
+  //       marketPlace
+  //         .connect(buyer)
+  //         .LazyBuy([
+  //           nonce,
+  //           seller.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           1,
+  //           100,
+  //           200,
+  //           sign,
+  //           "test",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
+  //           "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
+  //           "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
+  //         ])
+  //     ).to.be.revertedWith(
+  //       "MarketPlace: sellerAddress sign verification failed"
+  //     );
+  //   });
 
-    it("Check invalid signature length", async () => {
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 6;
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "test", myToken.address, 200, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, seller.address);
+  //   it("Check invalid signature length", async () => {
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nonce = 6;
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 1, "test", myToken.address, 200, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
 
-      await myToken.transfer(buyer.address, 10000);
+  //     await myToken.transfer(buyer.address, 10000);
 
-      await erc721Token
-        .connect(seller)
-        .setApprovalForAll(marketPlace.address, true);
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(buyer).approve(marketPlace.address, 2000);
+  //     await myToken.connect(buyer).approve(marketPlace.address, 2000);
 
-      await expect(
-        marketPlace
-          .connect(buyer)
-          .LazyBuy([
-            nonce,
-            seller.address,
-            erc721Token.address,
-            myToken.address,
-            1,
-            100,
-            200,
-            "0x4b7146d6dc30cd551dd60c5d6fa6ea20428d9ee2e12fea43f33c9b1f12b034456bb3646cf6cb2f8ae667d2d7a2b8bd8e1600651d7b13708c366e6b2f4aae37c3",
-            "test",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
-            "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
-            "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
-          ])
-      ).to.be.revertedWith("MarketPlace: invalid signature length.");
-    });
+  //     await expect(
+  //       marketPlace
+  //         .connect(buyer)
+  //         .LazyBuy([
+  //           nonce,
+  //           seller.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           1,
+  //           100,
+  //           200,
+  //           "0x4b7146d6dc30cd551dd60c5d6fa6ea20428d9ee2e12fea43f33c9b1f12b034456bb3646cf6cb2f8ae667d2d7a2b8bd8e1600651d7b13708c366e6b2f4aae37c3",
+  //           "test",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xe9707d0e6171f728f7473c24cc0432a9b07eaaf1efed6a137a4a8c12c79552d9",
+  //           "0x7e0eefeb2d8740528b8f598997a219669f0842302d3c573e9bb7262be3387e63",
+  //           "0x4a5a35f46430a2c06f61ebbec5f10917d2a6948a5d138dc89ecfdb15cedfe254"
+  //         ])
+  //     ).to.be.revertedWith("MarketPlace: invalid signature length.");
+  //   });
 
-    it("Should check Token Allowance", async () => {
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 7;
+  //   it("Should check Token Allowance", async () => {
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nonce = 7;
 
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "testing", myToken.address, 300, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, add1.address);
-      await marketPlace.connect(seller).setMerkleRoot("0x6163cc433d8d19c174b8de27d5a8a3137096e05bdc8b95e7848d8fc8ee8e2dcd")
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 1, "testing", myToken.address, 300, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, add1.address);
+  //     await marketPlace.connect(seller).setMerkleRoot("0x6163cc433d8d19c174b8de27d5a8a3137096e05bdc8b95e7848d8fc8ee8e2dcd")
 
-      await myToken.transfer(add2.address, 10000);
+  //     await myToken.transfer(add2.address, 10000);
 
-      await erc721Token
-        .connect(add1)
-        .setApprovalForAll(marketPlace.address, true);
+  //     await erc721Token
+  //       .connect(add1)
+  //       .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(add2).approve(marketPlace.address, 50);
+  //     await myToken.connect(add2).approve(marketPlace.address, 50);
     
 
-      await expect(
-        marketPlace
-          .connect(add2)
-          .LazyBuy([
-            nonce,
-            add1.address,
-            erc721Token.address,
-            myToken.address,
-            1,
-            100,
-            300,
-            sign,
-            "testing",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
-            "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
-            "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6"
-          ])
-      ).to.be.revertedWith("MarketPlace: Check the token allowance.");
-    });
+  //     await expect(
+  //       marketPlace
+  //         .connect(add2)
+  //         .LazyBuy([
+  //           nonce,
+  //           add1.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           1,
+  //           100,
+  //           300,
+  //           sign,
+  //           "testing",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
+  //           "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
+  //           "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6"
+  //         ])
+  //     ).to.be.revertedWith("MarketPlace: Check the token allowance.");
+  //   });
 
-    it("Should check Balance", async () => {
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nonce = 8;
+  //   it("Should check Balance", async () => {
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nonce = 8;
 
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [
-          erc721Token.address,
-          1,
-          "testing",
-          myToken.address,
-          1000000000000000,
-          nonce,
-        ]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, add1.address);
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [
+  //         erc721Token.address,
+  //         1,
+  //         "testing",
+  //         myToken.address,
+  //         1000000000000000,
+  //         nonce,
+  //       ]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, add1.address);
 
-      // await myToken.transfer(add2.address, 10000);
+  //     // await myToken.transfer(add2.address, 10000);
 
-      await erc721Token
-        .connect(add1)
-        .setApprovalForAll(marketPlace.address, true);
+  //     await erc721Token
+  //       .connect(add1)
+  //       .setApprovalForAll(marketPlace.address, true);
      
 
-      await myToken.connect(add2).approve(marketPlace.address, 1000);
+  //     await myToken.connect(add2).approve(marketPlace.address, 1000);
 
-      await expect(
-        marketPlace
-          .connect(add2)
-          .LazyBuy([
-            nonce,
-            add1.address,
-            erc721Token.address,
-            myToken.address,
-            1,
-            100,
-            1000000000000000,
-            sign,
-            "testing",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
-            "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
-            "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6"
-          ])
-      ).to.be.revertedWith("MarketPlace: Insufficient Amount");
-    });
-    it("Should check user is Blacklist or not", async () => {
-      let black = await blacklist.AddRemoveBlacklist(add5.address);
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nftPrice = 200;
-      let nonce = 9;
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, seller.address);
-       await marketPlace.connect(seller).setMerkleRoot("0xfe998a20cc647938e07bd0bd67ab2ce9edc7aecc0e7e10a539d7a3abd5d09651")
-      await myToken.transfer(add5.address, 10000);
+  //     await expect(
+  //       marketPlace
+  //         .connect(add2)
+  //         .LazyBuy([
+  //           nonce,
+  //           add1.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           1,
+  //           100,
+  //           1000000000000000,
+  //           sign,
+  //           "testing",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
+  //           "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
+  //           "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6"
+  //         ])
+  //     ).to.be.revertedWith("MarketPlace: Insufficient Amount");
+  //   });
+  //   it("Should check user is Blacklist or not", async () => {
+  //     let black = await blacklist.AddRemoveBlacklist(add5.address);
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nftPrice = 200;
+  //     let nonce = 9;
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
+  //      await marketPlace.connect(seller).setMerkleRoot("0xfe998a20cc647938e07bd0bd67ab2ce9edc7aecc0e7e10a539d7a3abd5d09651")
+  //     await myToken.transfer(add5.address, 10000);
 
-      await erc721Token
-        .connect(seller)
-        .setApprovalForAll(marketPlace.address, true);
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(add5).approve(marketPlace.address, 2000);
+  //     await myToken.connect(add5).approve(marketPlace.address, 2000);
    
 
-      await expect(
-        marketPlace
-          .connect(add5)
-          .LazyBuy([
-            nonce,
-            seller.address,
-            erc721Token.address,
-            myToken.address,
-            0,
-            100,
-            nftPrice,
-            sign,
-            "test",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
-            "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
-            "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6",
-            "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f60"
-          ])
-      ).to.be.revertedWith("MarketPlace: user is blacklisted");
-    });
-    it("Should check user is whitelisted or not", async () => {
-      let black = await blacklist.AddRemoveBlacklist(add5.address);
-      let blockNumber = await ethers.provider.getBlockNumber();
-      let block = await ethers.provider.getBlock(blockNumber);
-      let nftPrice = 200;
-      let nonce = 9;
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
-      );
-      let messageHash = ethers.utils.keccak256(message);
-      let sign = await web3.eth.sign(messageHash, seller.address);
-       await marketPlace.connect(seller).setMerkleRoot("0xfe998a20cc647938e07bd0bd67ab2ce9edc7aecc0e7e10a539d7a3abd5d09651")
-      await myToken.transfer(add5.address, 10000);
+  //     await expect(
+  //       marketPlace
+  //         .connect(add5)
+  //         .LazyBuy([
+  //           nonce,
+  //           seller.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           0,
+  //           100,
+  //           nftPrice,
+  //           sign,
+  //           "test",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
+  //           "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
+  //           "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6",
+  //           "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f60"
+  //         ])
+  //     ).to.be.revertedWith("MarketPlace: user is blacklisted");
+  //   });
+  //   it("Should check user is whitelisted or not", async () => {
+  //     let black = await blacklist.AddRemoveBlacklist(add5.address);
+  //     let blockNumber = await ethers.provider.getBlockNumber();
+  //     let block = await ethers.provider.getBlock(blockNumber);
+  //     let nftPrice = 200;
+  //     let nonce = 9;
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 0, "test", myToken.address, nftPrice, nonce]
+  //     );
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
+  //      await marketPlace.connect(seller).setMerkleRoot("0xfe998a20cc647938e07bd0bd67ab2ce9edc7aecc0e7e10a539d7a3abd5d09651")
+  //     await myToken.transfer(add5.address, 10000);
 
-      await erc721Token
-        .connect(seller)
-        .setApprovalForAll(marketPlace.address, true);
+  //     await erc721Token
+  //       .connect(seller)
+  //       .setApprovalForAll(marketPlace.address, true);
 
-      await myToken.connect(add5).approve(marketPlace.address, 2000);
+  //     await myToken.connect(add5).approve(marketPlace.address, 2000);
    
 
-      await expect(
-        marketPlace
-          .connect(add5)
-          .LazyBuy([
-            nonce,
-            seller.address,
-            erc721Token.address,
-            myToken.address,
-            0,
-            100,
-            nftPrice,
-            sign,
-            "test",
-            block.timestamp,
-            block.timestamp + 100,
-          ],[
-            "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
-            "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
-            "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6",
-            "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f67"
-          ])
-      ).to.be.revertedWith( "ADDRESS_NOT_WHITELISTED");
-    });
-  });
+  //     await expect(
+  //       marketPlace
+  //         .connect(add5)
+  //         .LazyBuy([
+  //           nonce,
+  //           seller.address,
+  //           erc721Token.address,
+  //           myToken.address,
+  //           0,
+  //           100,
+  //           nftPrice,
+  //           sign,
+  //           "test",
+  //           block.timestamp,
+  //           block.timestamp + 100,
+  //         ],[
+  //           "0xb6711c87f5d70aa0ec9dcbff648cab4ede7aec7218e4e2fef065f83253fc9108",
+  //           "0x86e4758919e8a5ac58f2df266df38c6563731b20b0259c60638f1582b1aeb22b",
+  //           "0xd4453790033a2bd762f526409b7f358023773723d9e9bc42487e4996869162b6",
+  //           "0x51494c771c377610540e8b9b86186216a64dcf73a7ab57ec2c5953286f059f67"
+  //         ])
+  //     ).to.be.revertedWith( "ADDRESS_NOT_WHITELISTED");
+  //   });
+  // });
 });

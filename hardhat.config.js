@@ -92,7 +92,7 @@ module.exports = {
 networks: {
   matic: {
       url: process.env.ALCHEMY_POLYGON_URL,
-      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2]
+      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1]
     },
   },
   etherscan: {
