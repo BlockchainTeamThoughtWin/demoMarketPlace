@@ -4,29 +4,17 @@ import Form from "react-bootstrap/Form";
 import style from "../../styles/create.module.css";
 import Button from "react-bootstrap/Button";
 import { CreateNFT } from "../api/apiCalls";
-import { getNonce, CreateNonce} from "../api/apiCalls";
+import { getNonce, CreateNonce,UpdateNonce} from "../api/apiCalls";
 
 
 
 const Create = () => {
-  useEffect(() => {
-    Nonce();
-  }, []);
+  // useEffect(() => {
+  //   Nonce();
+  // }, []);
 
   let currentNonce,  updatedNonce ;
-  const Nonce =  async() => {
-    
-   currentNonce = await getNonce();
-  debugger
-  
-  updatedNonce = currentNonce?.data[0].nonce +1;
-  currentNonce =currentNonce?.data[0].nonce;
- query.nonce = updatedNonce;
- query.currentNonce = currentNonce;
 
-
-
- }
  
   const [query, setQuery] = useState({
     _name: "",
@@ -36,8 +24,11 @@ const Create = () => {
     BlockChain: "",
     token_id: "",
     owner_address:"",
+    nonce: "",
+    currentNonce: "",
+
   });
-console.log(currentNonce?.data[0].nonce)
+// console.log(currentNonce?.data[0].nonce)
   // Update inputs value
   const handleParam = (e) => {
     const name = e.target.name;
@@ -46,15 +37,36 @@ console.log(currentNonce?.data[0].nonce)
   };
   // Form Submit function
   const formSubmit = async () => {
-    debugger
-    
-    console.log("Data", query);
+    const a = await getNonce();
+
+   if(a.data[0]?.nonce==undefined){
+    currentNonce=0
+   }else{
+
+     console.log(a.data[0]?.nonce);
+     currentNonce = a.data[0]?.nonce;
+   }
+
+    // if(a.data.length<1){
+   
+    //   console.log("currentNonce",currentNonce);
+      // query.nonce = currentNonce;
+    // }
+    // else{
+    //   updatedNonce = a.data[0].nonce;
+    //   await UpdateNonce(updatedNonce + 1);
+      
+    // }
+
     const tokenId = 0;
-    // query.nonce = increaseNonce;
+    query.currentNonce = currentNonce;
+    query.nonce = currentNonce+1;
+
     query.token_id = tokenId;
   
     await CreateNFT(query);
   };
+
 
   return (
     <>
