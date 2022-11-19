@@ -4,29 +4,14 @@ import Form from "react-bootstrap/Form";
 import style from "../../styles/create.module.css";
 import Button from "react-bootstrap/Button";
 import { CreateNFT } from "../api/apiCalls";
-import { getNonce, CreateNonce} from "../api/apiCalls";
+import { getNonce, UpdateNonce} from "../api/apiCalls";
+
 
 
 
 const Create = () => {
-  useEffect(() => {
-    Nonce();
-  }, []);
-
+ 
   let currentNonce,  updatedNonce ;
-  const Nonce =  async() => {
-    
-   currentNonce = await getNonce();
-  debugger
-  
-  updatedNonce = currentNonce?.data[0].nonce +1;
-  currentNonce =currentNonce?.data[0].nonce;
- query.nonce = updatedNonce;
- query.currentNonce = currentNonce;
-
-
-
- }
  
   const [query, setQuery] = useState({
     _name: "",
@@ -36,9 +21,28 @@ const Create = () => {
     BlockChain: "",
     token_id: "",
     owner_address:"",
+    nonce: "",
+    currentNonce: "",
   });
-console.log(currentNonce?.data[0].nonce)
-  // Update inputs value
+ 
+  const [imageUrl , setImageUrl] = useState('');
+
+
+  function getBase64(e) {
+    // debugger
+    var file = e.target.files[0]
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+  
+    setImageUrl(window.URL.createObjectURL(file))
+
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    }
+  }
+
   const handleParam = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -46,14 +50,26 @@ console.log(currentNonce?.data[0].nonce)
   };
   // Form Submit function
   const formSubmit = async () => {
-    debugger
-    
-    console.log("Data", query);
+    const a = await getNonce();
+
+   if(a.data[0]?.nonce==undefined){
+    currentNonce=0
+   }else{
+
+     console.log(a.data[0]?.nonce);
+     currentNonce = a.data[0]?.nonce;
+   }
+
+
+
     const tokenId = 0;
-    // query.nonce = increaseNonce;
+    query.currentNonce = currentNonce;
+    query.nonce = currentNonce+1;
+
     query.token_id = tokenId;
   
     await CreateNFT(query);
+   
   };
 
   return (
@@ -61,23 +77,15 @@ console.log(currentNonce?.data[0].nonce)
       <Navbar />
       <div className={style.Create}>
         <h1>Create New Item</h1>
-        <h1>Image-upload with preview</h1>
-        <br/><br/>
-<div class="row">
-  <div class="colummns large-12">
-    <div class="row">
-    <div class="large-4 columns">
-      <h4>Image Preview</h4>
-      <br/>
-      <div class="preview hide">
-        <img src="" class="image_to_upload"/>
+       
+<div >
+      <div className={style.item}>
+        <img width={"600px"} src={imageUrl} className={style.NFTImage} />
       </div>
-      <label for='dvd_image'>DVD Image:</label>
-      <input type="file" id="dvd_image" />
+      <label for='dvd_image'>NFT Image: </label>
+      <input type="file" id="dvd_image" name="imgUpload" value="" onChange={getBase64} />
     </div>
-  </div>
-  </div>
-</div>
+
 
 
         <Form className={style.form}>
@@ -141,7 +149,7 @@ console.log(currentNonce?.data[0].nonce)
 
           <Form.Group>
             <div>
-              <h1 className={style.Names}>BlockChian</h1>
+              <h1 className={style.Names}>BlockChain</h1>
               <select className={style.chain}>
                 <option value="female">Ethereum</option>
                 <option value="female">Arbitrum</option>
