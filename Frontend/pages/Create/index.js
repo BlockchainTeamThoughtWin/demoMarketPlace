@@ -6,9 +6,19 @@ import Button from "react-bootstrap/Button";
 import { CreateNFT } from "../api/apiCalls";
 import { getNonce, UpdateNonce } from "../api/apiCalls";
 import axios from "axios";
-
+import { useRouter } from 'next/router'
 const Create = () => {
+  const router = useRouter();
   let currentNonce, updatedNonce;
+
+  const getInitialState = () => {
+    const value = "Orange";
+    return value;
+  };
+
+  const [value, setValue] = useState(getInitialState);
+
+
 
   const [query, setQuery] = useState({
     _name: "",
@@ -23,31 +33,33 @@ const Create = () => {
     Imguri: "",
   });
 
+
   const [imageUrl, setImageUrl] = useState("");
 
 
- const getBase64 = async (e)  => {
+  const getBase64 = async (e) => {
     // debugger
     var file = e.target.files[0];
 
     // initialize the form data
     const formData = new FormData();
-                formData.append("file", file);
+    formData.append("file", file);
 
-                const resFile = await axios({
-                    method: "post",
-                    url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
-                    data: formData,
-                    headers: {
-                        'pinata_api_key': "d0d1a9de90159925f8b6",
-                        'pinata_secret_api_key': "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
-                        "Content-Type": "multipart/form-data"
-                    },
-                });
+    const resFile = await axios({
+      method: "post",
+      url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+      data: formData,
+      headers: {
+        'pinata_api_key': "d0d1a9de90159925f8b6",
+        'pinata_secret_api_key': "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
+        "Content-Type": "multipart/form-data"
+      },
+    });
 
-                const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-             console.log(ImgHash); 
-           query.Imguri = ImgHash;
+    const ImgHash = `https://ipfs.io/ipfs/${resFile.data.IpfsHash}`;
+    //http://127.0.0.1:8080/ipfs/QmXgTxeCpuL44iyGmav2k6WJ1YFACm1224fuoZ4CLFYERR
+    console.log(ImgHash);
+    query.Imguri = ImgHash;
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -81,6 +93,8 @@ const Create = () => {
     query.token_id = tokenId;
 
     await CreateNFT(query);
+
+    router.push("/")
   };
 
   return (
@@ -167,14 +181,15 @@ const Create = () => {
           <Form.Group>
             <div>
               <h1 className={style.Names}>BlockChain</h1>
-              <select className={style.chain}>
-                <option value="female">Ethereum</option>
-                <option value="female">Arbitrum</option>
-                <option value="male">Avalanche</option>
-                <option value="other">Klaytn</option>
-                <option value="other">Polygon</option>
-                <option value="other">Solana</option>
+
+              <select name="BlockChain" value={query.BlockChain} onChange={handleParam} className={style.chain}>
+                <option value="" selected>Select the BlockChain</option>
+                <option value="Ethereum" >Ethereum</option>
+                <option value="Polygon">Polygon</option>
+
               </select>
+
+
             </div>
           </Form.Group>
           <Button className={style.primary} onClick={formSubmit}>

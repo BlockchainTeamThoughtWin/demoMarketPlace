@@ -1,20 +1,23 @@
 .CardDiv{
-    display: flex;
+   
+    margin-top: 25px;
+    margin-left: 40px;
+    margin-right: 40px;
 }
 
-.Card1{
-    width: 100px;
-    height: 100px;
-    left: 0;
-   
+
+
+.ImageName {
+    text-align: center;
+    position: absolute;
+    bottom: -8px;
+    padding: 10px;
+    width: 100%;
+    background-color: #0000006b;
+    color: white;
+    border-radius: 0px 0px 25px 25px;
 }
-.Card2{
-    width: 100px;
-    height: 100px;
-    left: 0;
-}
-.Card3{
-    width: 100px;
-    height: 100px;
-    right: 0;
+
+.ImageDesign {
+    border-radius: 25px;
 }

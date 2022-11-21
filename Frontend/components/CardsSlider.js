@@ -1,7 +1,8 @@
- // Import Swiper React components
+// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 import { getNFt } from "../pages/api/apiCalls.js";
+import style from "../styles/CardSlide.module.css"
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -28,37 +29,39 @@ const CardsSlider = () => {
     setFormData(res);
   };
 
-  return(  
-  <>
-    <Swiper
-      modules={[Navigation, Pagination, Scrollbar, A11y]}
-      spaceBetween={50}
-      slidesPerView={4}
-      navigation
-      onSlideChange={() => console.log("slide change")}
-      onSwiper={(swiper) => console.log(swiper)}
+  return (
+    <div className={style.CardDiv}>
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={50}
+        slidesPerView={4}
+        navigation
+        onSlideChange={() => console.log("slide change")}
+        onSwiper={(swiper) => console.log(swiper)}
       >
-      {
-        fromdata.length > 0 && fromdata?.map((item) => (
-          <>
-          <SwiperSlide>
-        {/* <img src={item?.uri} width="80%" height="80%"/> */}
-        <h3>{
-          item?._name
-        }</h3>
-          <h1>dsfdsfddsfsf</h1>
+        {
+          fromdata.length > 0 && fromdata?.map((item) => (
+
+            <SwiperSlide  >
+              <div>
+                <img src={item?.Imguri} width="100%" height="300px"  className={style.ImageDesign} />
+
+                <h5 className={style.ImageName}>{
+                  item?._name
+                } </h5>
+
+              </div>
+
+            </SwiperSlide>
 
 
-      </SwiperSlide>
-          </>
+          ))
+        }
 
-))
-}
-      
-    </Swiper>
-    
-  
-</>
+      </Swiper>
+
+
+    </div>
   )
 };
 
