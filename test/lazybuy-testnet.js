@@ -1,73 +1,119 @@
 const { expect } = require("chai");
-const { ethers, web3 } = require("hardhat");
+const { ethers, network, web3 } = require("hardhat");
 
-let seller, buyer;
+let owner = "0x2736e3A9db02ff29Eb328f31f8437dea325336F4";
+
+let  owner1, seller,
+  buyer,
+  add1,
+  add2,
+  add3,
+  add4,
+  add5,
+  add6,
+  hawks,
+  erc721Token,
+  marketPlace;
+
 
 describe("NFTCollection", async () => {
   before(async () => {
+    await network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: [owner],
+    });
+    owner1 = await ethers.getSigner(owner);
     let accounts = await ethers.getSigners();
-    [seller, buyer] = accounts;
+    [
+      seller,
+      buyer,
+      add1,
+      add2,
+      add3,
+      add4,
+      add5,
+      add6,
+      hawks,
+      erc721Token,
+      marketplace,
+      _,
+    ] = accounts;
+
 
     ERC721Token = await hre.ethers.getContractFactory("ERC721Token");
     erc721Token = await ERC721Token.attach(
-      "0x8C5198983cF2A943547cc83752787bB059bA670A"
+      "0x10E457129b4F5F35EdaC901AC669333a887C1513"
     );
 
     MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
     marketPlace = await MarketPlace.attach(
-      "0xCC05DAEA405b538b1076429540207Cc01aCca4d6"
+      "0x473F94773f52E8F4967EE7F91650a90cc85f03b7"
     );
 
-    ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
-    myToken = ERC20Token.attach("0x602d54400e53C2BBC28845CF657d77E7Ffb37286");
+    Hawks = await hre.ethers.getContractFactory("Hawks");
+    hawks = Hawks.attach("0x12A98122E956Bbf3535523Ac9A2C178E3E2af325");
 
     BlackList = await hre.ethers.getContractFactory("BlackList");
-    BlackList = await BlackList.attach(
-      "0x9D4c68F636b668Db6974CA35c2E97986b6c016b8"
+    blacklist = await BlackList.attach(
+      "0x85C6C022F8007A8392E83C0a00eC41B66e8e4B8d"
     );
+
+    console.log("hawks Address", hawks.address);
+    console.log("ERC721 Address", erc721Token.address);
+    console.log("BlackList Address", blacklist.address);
+    console.log("MarketPlace Address", marketPlace.address);
   });
 
 
   
   describe("Testing MarketPlace Functions",() => {
 
-    it("Should LazyBuy Minted NFT", async () => {
-      let BlockNumber = await ethers.provider.getBlockNumber();
-      let Block = await ethers.provider.getBlock(BlockNumber);
-      let SellerPrivate = "fa27394e98fadce31d62e0ef49adad668abd76abbd953d46f1b2c7f1d23d6e62"
-      await marketPlace.connect(seller).setMerkleRoot("0x50ca27b1887acf96843d5c597c4448e9ca7ba49b04d71c75a2009136de0fb74b")
-      let NFTPrice = 200;
-      let Nonce = 24;
-      let Royality = 250;
-      let PlatFee = 250;
+  //   it("Should LazyBuy Minted NFT", async () => {
+  //     let BlockNumber = await ethers.provider.getBlockNumber();
+  //     let Block = await ethers.provider.getBlock(BlockNumber);
+  //     let NFTPrice = 200;
+  //     let Nonce = 24;
+  //     let Royality = 250;
 
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "DemoTest", myToken.address, NFTPrice, Nonce]
-      );
+  //     // await marketPlace.connect(seller).setMerkleRoot("0xbe2d7e9a8069ecb94e1eeac31455299467f5a257ccba4a83950046a3066c9465");
+      
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 0, "DemoTest", hawks.address, NFTPrice, Nonce]
+  //     );
 
-      let messageHash = ethers.utils.keccak256(message);
-      let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let sign = await web3.eth.sign(messageHash, seller.address);
+  //     // let sign = await web3.eth.accounts.sign(messageHash, "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
+  //     await hawks.transfer(buyer.address, NFTPrice);
+  //     await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
+  //     await hawks.connect(buyer).approve(marketPlace.address,NFTPrice);  
+      
+  //     let _proof = [
+  //       "0x04a10bfd00977f54cc3450c9b25c9b3a502a089eba0097ba35fc33c4ea5fcb54",
+  //       "0x8d4e49f4168518216881f7f4662ce5827947f58ecacfc7168fe5a9c9471ffffb",
+  //       "0xf6d82c545c22b72034803633d3dda2b28e89fb704f3c111355ac43e10612aedc"
+  //     ]
+  //    lazyBuy = await marketPlace.connect(buyer).LazyBuy([
+  //       Nonce,
+  //       seller.address,
+  //       erc721Token.address,
+  //       hawks.address,
+  //       0,
+  //       Royality,
+  //       NFTPrice,
+  //       sign.signature,
+  //       "DemoTest",
+  //       Block.timestamp,
+  //       Block.timestamp + 100,
+  //     ], _proof);
+  //     expect(await erc721Token.ownerOf(1)).to.be.equal(buyer.address);
+  // })
 
-    await myToken.transfer(buyer.address, NFTPrice);
-    await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
-    await myToken.connect(buyer).approve(marketPlace.address,NFTPrice);  
+  it("set merkleroot", async () => {
+  await marketPlace.connect(owner1).setMerkleRoot("0xbe2d7e9a8069ecb94e1eeac31455299467f5a257ccba4a83950046a3066c9465");
 
-     lazyBuy = await marketPlace.connect(buyer).LazyBuy([
-        Nonce,
-        seller.address,
-        erc721Token.address,
-        myToken.address,
-        1,
-        Royality,
-        NFTPrice,
-        SellerSign.signature,
-        "DemoTest",
-        Block.timestamp,
-        Block.timestamp + 100,
-      ], ["0x29acd41530d944a4717b04caa3a9503528eeea474d1b1359b7963ebc8d032720"])
   })
-
 })
 })
 

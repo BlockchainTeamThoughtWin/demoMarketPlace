@@ -1,4 +1,3 @@
-const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
 async function main() {
@@ -8,7 +7,6 @@ async function main() {
   const hawks = await Hawks.deploy();
   await hawks.deployed();
   console.log("Hawks deployed to:", hawks.address);
- 
 
     // BlackList
   const BlackList = await hre.ethers.getContractFactory("BlackList");
@@ -26,23 +24,13 @@ async function main() {
 
   // MarketPlace
   const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
-  marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
+  marketPlace = await upgrades.deployProxy(MarketPlace, [blacklist.address], {
     initializer: "initialize",
   });
   await marketPlace.deployed();
+  
   console.log("MarketPlace deployed to:", marketPlace.address);
 
-  const address = await hre.upgrades.erc1967.getImplementationAddress(
-    marketPlace.address
-  );
-  console.log("Address:", marketPlace.address);
-  console.log("Address:", address);
-
-  // await hre.run("verify:verify", {
-  //   address: address,
-  //   contract: "contracts/MarketPlace.sol:MarketPlace",
-  //   constructorArguments: []
-  // });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
