@@ -10,24 +10,12 @@ async function main() {
  
   
   const MarketPlace = await hre.ethers.getContractFactory("MarketPlace")
-  const marketPlace = await upgrades.upgradeProxy("0xb0243add64D8ACFCd30E7E99E9Ff0ba784eB612f", MarketPlace)
+  const marketPlace = await upgrades.upgradeProxy("0x473F94773f52E8F4967EE7F91650a90cc85f03b7", MarketPlace)
   
   await marketPlace.deployed();
   console.log("Updated")
 
 console.log("MarketPlace deployed to:", marketPlace.address);
-
-  const address = await hre.upgrades.erc1967.getImplementationAddress(
-    marketPlace.address
-  );
-  console.log("Address:", marketPlace.address);
-  console.log("Address:", address);
-
-  await hre.run("verify:verify", {
-    address: address,
-    contract: "contracts/MarketPlace.sol:MarketPlace",
-    constructorArguments: []
-  });
 }
 
 // We recommend this pattern to be able to use async/await everywhere

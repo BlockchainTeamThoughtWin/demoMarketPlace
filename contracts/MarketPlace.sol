@@ -239,7 +239,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             address(this),
             _CalculatedPlatFormFee(
                 seller.paymentAssetAddress,
-                seller.sellerAddress,
+                msg.sender,
                 seller.amount
             )
         ); //transfer PlatformFee
@@ -289,13 +289,13 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         WinnerDetails calldata winnerDetails,
         bytes32[] calldata _proof
     ) external {
-        require(blacklist._isPermitted(msg.sender), "user is blacklisted");
+        require(blacklist._isPermitted(winnerDetails.winnerAddress), "user is blacklisted");
 
         if (
             !MerkleProof.verify(
                 _proof,
                 merkleRoot,
-                keccak256(abi.encodePacked(msg.sender))
+                keccak256(abi.encodePacked(winnerDetails.winnerAddress))
             )
         ) {
             revert InvalidProof();
