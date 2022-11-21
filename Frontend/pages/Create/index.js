@@ -1,18 +1,15 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Form from "react-bootstrap/Form";
 import style from "../../styles/create.module.css";
 import Button from "react-bootstrap/Button";
 import { CreateNFT } from "../api/apiCalls";
-import { getNonce, UpdateNonce} from "../api/apiCalls";
-
-
-
+import { getNonce, UpdateNonce } from "../api/apiCalls";
+import axios from "axios";
 
 const Create = () => {
- 
-  let currentNonce,  updatedNonce ;
- 
+  let currentNonce, updatedNonce;
+
   const [query, setQuery] = useState({
     _name: "",
     Link: "",
@@ -20,27 +17,45 @@ const Create = () => {
     Supply: "",
     BlockChain: "",
     token_id: "",
-    owner_address:"",
+    owner_address: "",
     nonce: "",
     currentNonce: "",
+    Imguri: "",
   });
- 
-  const [imageUrl , setImageUrl] = useState('');
+
+  const [imageUrl, setImageUrl] = useState("");
 
 
-  function getBase64(e) {
+ const getBase64 = async (e)  => {
     // debugger
-    var file = e.target.files[0]
-    let reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => {
-  
-    setImageUrl(window.URL.createObjectURL(file))
+    var file = e.target.files[0];
 
+    // initialize the form data
+    const formData = new FormData();
+                formData.append("file", file);
+
+                const resFile = await axios({
+                    method: "post",
+                    url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+                    data: formData,
+                    headers: {
+                        'pinata_api_key': "d0d1a9de90159925f8b6",
+                        'pinata_secret_api_key': "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
+                        "Content-Type": "multipart/form-data"
+                    },
+                });
+
+                const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
+             console.log(ImgHash); 
+           query.Imguri = ImgHash;
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setImageUrl(window.URL.createObjectURL(file));
     };
     reader.onerror = function (error) {
-      console.log('Error: ', error);
-    }
+      console.log("Error: ", error);
+    };
   }
 
   const handleParam = (e) => {
@@ -52,24 +67,20 @@ const Create = () => {
   const formSubmit = async () => {
     const a = await getNonce();
 
-   if(a.data[0]?.nonce==undefined){
-    currentNonce=0
-   }else{
-
-     console.log(a.data[0]?.nonce);
-     currentNonce = a.data[0]?.nonce;
-   }
-
-
+    if (a.data[0]?.nonce == undefined) {
+      currentNonce = 0;
+    } else {
+      console.log(a.data[0]?.nonce);
+      currentNonce = a.data[0]?.nonce;
+    }
 
     const tokenId = 0;
     query.currentNonce = currentNonce;
-    query.nonce = currentNonce+1;
+    query.nonce = currentNonce + 1;
 
     query.token_id = tokenId;
-  
+
     await CreateNFT(query);
-   
   };
 
   return (
@@ -77,16 +88,14 @@ const Create = () => {
       <Navbar />
       <div className={style.Create}>
         <h1>Create New Item</h1>
-       
-<div >
-      <div className={style.item}>
-        <img width={"600px"} src={imageUrl} className={style.NFTImage} />
-      </div>
-      <label for='dvd_image'>NFT Image: </label>
-      <input type="file" id="dvd_image" name="imgUpload" value="" onChange={getBase64} />
-    </div>
 
-
+        <div>
+          <div className={style.item}>
+            <img width={"600px"} src={imageUrl} className={style.NFTImage} />
+          </div>
+          <Form.Label>NFT Image: </Form.Label>
+          <input type="file" name="Imguri" onChange={getBase64} />
+        </div>
 
         <Form className={style.form}>
           <Form.Group>
@@ -112,6 +121,7 @@ const Create = () => {
               are welcome to link to your own webpage with more details.
             </h6>
             <Form.Control
+              type="text"
               as="textarea"
               placeholder="https://yoursite.io/item/123"
               name="Link"
@@ -128,6 +138,7 @@ const Create = () => {
               underneath its image. Markdown syntax is supported.
             </h6>
             <Form.Control
+              type="text"
               as="textarea"
               placeholder="Provide Detailed Discription of Your Item"
               rows={4}
@@ -144,7 +155,13 @@ const Create = () => {
             <h6 className={style.names}>
               The number of items that can be minted. No gas cost to you!
             </h6>
-            <Form.Control as="textarea" placeholder="Total Supply " />
+            <Form.Control
+              type="number"
+              placeholder="Total Supply"
+              name="Supply"
+              value={query.Supply}
+              onChange={handleParam}
+            />
           </Form.Group>
 
           <Form.Group>
