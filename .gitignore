@@ -1,6 +1,11 @@
-# dependencies
 node_modules
-artifacts
-cache
-.openzeppelin
 .env
+coverage
+coverage.json
+typechain
+typechain-types
+
+#Hardhat files
+cache
+artifacts
+.openzeppelin

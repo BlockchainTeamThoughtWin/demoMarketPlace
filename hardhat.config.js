@@ -90,15 +90,14 @@ module.exports = {
 
 
 networks: {
-    goerli: {
+  goerli: {
       url: process.env.ALCHEMY_GOERLI_URL,
       accounts: [process.env.PRIVATE_KEY]
     },
   },
   etherscan: {
     apiKey: {
-      goerli: "DNZ4DW35G4WKQSFN48XW9R2PMAVNQI23SU",
-
-    },
-  },
+      goerli_api_key: 'K63V19BYNUEP2EEIKIZYE1CGWY85SCRF41'
+    }
+  }
 };

@@ -10,9 +10,9 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Enumer
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721RoyaltyUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "contracts/mocks/interfaces/Iblacklist.sol";
+import "contracts/interfaces/Iblacklist.sol";
 
-contract ERC721TokenV2 is
+contract ERC721Token is
     ERC721Upgradeable,
     OwnableUpgradeable,
     ERC721URIStorageUpgradeable,

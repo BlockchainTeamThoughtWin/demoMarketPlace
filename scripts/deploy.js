@@ -1,45 +1,48 @@
+const { ethers } = require("hardhat");
 const hre = require("hardhat");
-
 
 async function main() {
   // signers = await ethers.getSigners();
 
-  const ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
-  const myToken = await ERC20Token.deploy("1000");
-  await myToken.deployed();
-  console.log("ERC20Token deployed to:", myToken.address);
-
+  const Hawks = await hre.ethers.getContractFactory("Hawks");
+  const hawks = await Hawks.deploy();
+  await hawks.deployed();
+  console.log("Hawks deployed to:", hawks.address);
+ 
 
     // BlackList
   const BlackList = await hre.ethers.getContractFactory("BlackList");
-  const blacklist = await BlackList.deploy();
+  blacklist = await BlackList.deploy();
   await blacklist.deployed();
   console.log("BlackList deployed to:", blacklist.address);
- 
-    // NFT721 Deployed
 
   // ERC721
   const ERC721Token = await hre.ethers.getContractFactory("ERC721Token");
-  const erc721Token = await upgrades.deployProxy(ERC721Token, [500, blacklist.address], {
+  erc721Token = await upgrades.deployProxy(ERC721Token, [500, blacklist.address], {
     initializer: "initialize",
   });
-//   await erc721Token.deployed();
-//   console.log("ERC721Token   deployed to:", erc721Token.address);
-
-  const ERC721TokenV2 = await hre.ethers.getContractFactory("ERC721TokenV2");
-  const erc721TokenV2 = await upgrades.upgradeProxy(erc721Token, ERC721TokenV2);
-  console.log("ERC721TokenV2  deployed to:", erc721TokenV2.address);
-
-
+  await erc721Token.deployed();
+  console.log("ERC721Token   deployed to:", erc721Token.address);
 
   // MarketPlace
   const MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
-  const marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
+  marketPlace = await upgrades.deployProxy(MarketPlace, [ blacklist.address], {
     initializer: "initialize",
   });
   await marketPlace.deployed();
   console.log("MarketPlace deployed to:", marketPlace.address);
 
+  const address = await hre.upgrades.erc1967.getImplementationAddress(
+    marketPlace.address
+  );
+  console.log("Address:", marketPlace.address);
+  console.log("Address:", address);
+
+  // await hre.run("verify:verify", {
+  //   address: address,
+  //   contract: "contracts/MarketPlace.sol:MarketPlace",
+  //   constructorArguments: []
+  // });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
