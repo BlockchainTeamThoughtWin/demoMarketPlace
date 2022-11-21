@@ -1,0 +1,12 @@
+.tabCollect:focus{
+border-bottom: 5px solid blue;
+}
+.tabCreated:focus{
+    border-bottom: 5px solid blue;
+    }
+    .tabFav:focus{
+        border-bottom: 5px solid blue;
+  }
+.tabActive:focus{
+    border-bottom: 5px solid blue;
+    }
