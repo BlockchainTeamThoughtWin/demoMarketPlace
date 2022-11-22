@@ -10,20 +10,20 @@ describe("NFTCollection", async () => {
 
     ERC721Token = await hre.ethers.getContractFactory("ERC721Token");
     erc721Token = await ERC721Token.attach(
-      "0x8C5198983cF2A943547cc83752787bB059bA670A"
+      "0x86B207E66e0eC5E3247A333d46f3a38Fa7b4cfCF"
     );
 
     MarketPlace = await hre.ethers.getContractFactory("MarketPlace");
     marketPlace = await MarketPlace.attach(
-      "0xCC05DAEA405b538b1076429540207Cc01aCca4d6"
+      "0x304CD45F5B4cf3FB3e0088895C25434b0aF4bb84"
     );
 
     ERC20Token = await hre.ethers.getContractFactory("ERC20Token");
-    myToken = ERC20Token.attach("0x602d54400e53C2BBC28845CF657d77E7Ffb37286");
+    myToken = ERC20Token.attach("0x53D362b6febE995Bd3FA61a0333f1D2758e22A2e");
 
     BlackList = await hre.ethers.getContractFactory("BlackList");
     BlackList = await BlackList.attach(
-      "0x9D4c68F636b668Db6974CA35c2E97986b6c016b8"
+      "0xed76AB40961a813d832a65deb96Ab14340bcD98E"
     );
   });
 
@@ -71,4 +71,3 @@ describe("NFTCollection", async () => {
 })
 })
 
-// [24,"0x2736e3A9db02ff29Eb328f31f8437dea325336F4","0x8C5198983cF2A943547cc83752787bB059bA670A","0x602d54400e53C2BBC28845CF657d77E7Ffb37286",0,250,200,"0xb1578ffa2aec401ccd20b468244ef63af83c4df8ff440acb1cc829ff3fa1150c68c201f2c29414e94bf0ab7f12e7ab571466e6fb22901cbc1af5eb8f982196a41c","DemoTest",1668423332,1668423432]

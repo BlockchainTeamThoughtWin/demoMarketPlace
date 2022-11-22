@@ -90,14 +90,14 @@ module.exports = {
 
 
 networks: {
-  matic: {
-      url: process.env.ALCHEMY_POLYGON_URL,
-      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1]
+  goerli: {
+      url: process.env.ALCHEMY_GOERLI_URL ,
+      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2]
     },
   },
   etherscan: {
     apiKey: {
-      polygonMumbai: '2MTPM72IFXXRE9UZ7X6Y56BVD2W6BRY2IK'
+      goerli_api_key: 'K63V19BYNUEP2EEIKIZYE1CGWY85SCRF41'
     }
   }
 };
