@@ -66,30 +66,17 @@ module.exports = {
           },
         },
       },
-      {
-        version: "0.4.18",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200
-          }
-        },
-      },
-      {
-        version: "0.8.4",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200
-          }
-        },
-      }
-
     ],
   },
 
 
 networks: {
+  hardhat:{
+    forking:{
+      url :" https://eth-goerli.g.alchemy.com/v2/BuQ13s_SV0UFNJp8L0GJHTvyPrFxmxSz",
+      enabled: true
+    }
+  },
   goerli: {
       url: process.env.ALCHEMY_GOERLI_URL ,
       accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2]
@@ -97,7 +84,7 @@ networks: {
   },
   etherscan: {
     apiKey: {
-      goerli_api_key: 'K63V19BYNUEP2EEIKIZYE1CGWY85SCRF41'
+      goerli: process.env.GORELI_API_KEY
     }
   }
 };
