@@ -2,9 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Wallet": "pages/Wallet.js",
-  "/[tokenID]": "pages/[tokenID].js",
-  "/": "pages/index.js",
-  "/Create": "pages/Create.js",
-  "/Profile": "pages/Profile.js"
+  "/Profile": "pages/Profile.js",
+  "/[tokenID]": "pages/[tokenID].js"
 }
