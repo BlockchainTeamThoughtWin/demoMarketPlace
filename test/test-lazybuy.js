@@ -326,6 +326,16 @@ describe("MarketPlace", () => {
       // console.log("Event Name: ", await receipt.events[7].event);
       // console.log("Owner Address: ", await receipt.events[7].args[2]);
     });
+    it("Should Withdrawl Platform Fee",async () => {
+      let OldMPBal = await hawks.balanceOf(marketPlace.address)
+      // console.log((OldMPBal));
+      let OldSel = await hawks.balanceOf(seller.address)
+      // console.log((OldSel));
+      let Withdrawl = await marketPlace.connect(seller).withdrawToken(hawks.address,OldMPBal);
+      // console.log(Withdrawl);
+      let NewSel = await hawks.balanceOf(seller.address)
+      // console.log((NewSel));
+    })
   });
 
   describe("LazyBuy Negative Cases", () => {

@@ -29,51 +29,51 @@ describe("NFTCollection", async () => {
 
 
   
-  describe("Testing MarketPlace Functions",() => {
-    it("Should Mint Nft and put it on Auction", async () => {
-      let BlockNumber = await ethers.provider.getBlockNumber();
-      let Block = await ethers.provider.getBlock(BlockNumber);
-      let SellerPrivate = "13b110e7ac194d2827d04f17c11726068bb2dc19b595b5a33acaf7fc15604e1b"
-      let BuyerPrivate = "020fe9e134d82232b7d370014c63d73a1015a17e7f6b3ab6e48d0d1f9ac9ace2"
+  // describe("Testing MarketPlace Functions",() => {
+  //   it("Should Mint Nft and put it on Auction", async () => {
+  //     let BlockNumber = await ethers.provider.getBlockNumber();
+  //     let Block = await ethers.provider.getBlock(BlockNumber);
+  //     let SellerPrivate = "13b110e7ac194d2827d04f17c11726068bb2dc19b595b5a33acaf7fc15604e1b"
+  //     let BuyerPrivate = "020fe9e134d82232b7d370014c63d73a1015a17e7f6b3ab6e48d0d1f9ac9ace2"
 
-      let NFTPrice = 6000;
-      let Nonce = 12;
-      let Royality = 400;
-      // let PlatFee = 350;
+  //     let NFTPrice = 6000;
+  //     let Nonce = 12;
+  //     let Royality = 400;
+  //     // let PlatFee = 350;
 
-      let message = ethers.utils.solidityPack(
-        ["address", "uint256", "string", "address", "uint256", "uint256"],
-        [erc721Token.address, 1, "Demo", hawks.address, NFTPrice, Nonce]
-      );
+  //     let message = ethers.utils.solidityPack(
+  //       ["address", "uint256", "string", "address", "uint256", "uint256"],
+  //       [erc721Token.address, 1, "Demo", hawks.address, NFTPrice, Nonce]
+  //     );
 
-      let messageHash = ethers.utils.keccak256(message);
-      let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
+  //     let messageHash = ethers.utils.keccak256(message);
+  //     let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
       
-      let message1 = ethers.utils.solidityPack(
-        ["address", "uint256", "uint256", "uint256"],
-        [buyer.address, NFTPrice+200, Block.timestamp + 111, Nonce]
-      );
-      let messageHash1 = ethers.utils.keccak256(message1);
-      let BuyerSign = await web3.eth.accounts.sign(messageHash1,BuyerPrivate);
+  //     let message1 = ethers.utils.solidityPack(
+  //       ["address", "uint256", "uint256", "uint256"],
+  //       [buyer.address, NFTPrice+200, Block.timestamp + 111, Nonce]
+  //     );
+  //     let messageHash1 = ethers.utils.keccak256(message1);
+  //     let BuyerSign = await web3.eth.accounts.sign(messageHash1,BuyerPrivate);
      
-     console.log("nkans", seller.address, await hawks.balanceOf(seller.address));
-     console.log("nasasasakans",  buyer.address, await hawks.balanceOf(buyer.address)); 
+    //  console.log("nkans", seller.address, await hawks.balanceOf(seller.address));
+    //  console.log("nasasasakans",  buyer.address, await hawks.balanceOf(buyer.address)); 
     
       // console.log("asnksn", buyer.address);
       // await hawks.connect(seller).transfer(buyer.address,NFTPrice);
-      await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
-      await hawks.connect(buyer).approve(marketPlace.address,NFTPrice);
+      // await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
+      // await hawks.connect(buyer).approve(marketPlace.address,NFTPrice);
       // console.log("OLDSellerBal", await myToken.balanceOf(seller.address));
       // console.log("OLDBuyerBal", await myToken.balanceOf(buyer.address));
       // console.log("OLDMarketBal", await myToken.balanceOf(marketPlace.address));
       
      
-      let SellerStruct = [Nonce,seller.address,erc721Token.address,hawks.address,1,Royality,NFTPrice,SellerSign.signature,"Demo",Block.timestamp,Block.timestamp + 100]
-      let BuyerStruct = [buyer.address,NFTPrice+200,BuyerSign.signature,Block.timestamp+111,Nonce];
-      let LazyAuction = await marketPlace.connect(buyer).lazyAuction(SellerStruct,BuyerStruct,[
-             "0xd8dc0f69e910411fe490fa6d37d0c1624dfccf0506c98ff5140448cb5faedc54",
-            "0x536382c680b10be7294edd08db0161a6f438e9340af2a04916d8ad39952fac67"
-          ]);
+      // let SellerStruct = [Nonce,seller.address,erc721Token.address,hawks.address,1,Royality,NFTPrice,SellerSign.signature,"Demo",Block.timestamp,Block.timestamp + 100]
+      // let BuyerStruct = [buyer.address,NFTPrice+200,BuyerSign.signature,Block.timestamp+111,Nonce];
+      // let LazyAuction = await marketPlace.connect(buyer).lazyAuction(SellerStruct,BuyerStruct,[
+      //        "0xd8dc0f69e910411fe490fa6d37d0c1624dfccf0506c98ff5140448cb5faedc54",
+      //       "0x536382c680b10be7294edd08db0161a6f438e9340af2a04916d8ad39952fac67"
+      //     ]);
 
         // let CalculatedRoyality = (NFTPrice*PlatFee)/10000;
         // console.log("Royality",CalculatedRoyality);
@@ -88,7 +88,7 @@ describe("NFTCollection", async () => {
         
 
 
-    })
+    
 
     // it("Should put minted NFT on Auction",async  () => {
     //   let BlockNumber = await ethers.provider.getBlockNumber();
@@ -132,47 +132,50 @@ describe("NFTCollection", async () => {
     //   // console.log(await myToken.balanceOf(owner1.address));
     // })
 
-    // it("Should Mint Nft and LazyBuy it", async() => {
-    //   let BlockNumber = await ethers.provider.getBlockNumber();
-    //   let Block = await ethers.provider.getBlock(BlockNumber);
-    //   let SellerPrivate = "13b110e7ac194d2827d04f17c11726068bb2dc19b595b5a33acaf7fc15604e1b"
+    it("Should Mint Nft and LazyBuy it", async() => {
+      let BlockNumber = await ethers.provider.getBlockNumber();
+      let Block = await ethers.provider.getBlock(BlockNumber);
+      let SellerPrivate = "13b110e7ac194d2827d04f17c11726068bb2dc19b595b5a33acaf7fc15604e1b"
 
-    //   let NFTPrice = 800;
-    //   let Nonce = 23;
-    //   let Royality = 250;
-    //   let PlatFee = 250;
+      let NFTPrice = 800;
+      let Nonce = 25;
+      let Royality = 500;
+      let PlatFee = 250;
 
-    //   let message = ethers.utils.solidityPack(
-    //     ["address", "uint256", "string", "address", "uint256", "uint256"],
-    //     ["0x635D5AD950B46d630cEAc70A60102F0032F4010F", 0, "DemoTest", "0x602d54400e53C2BBC28845CF657d77E7Ffb37286", NFTPrice, Nonce]
-    //   );
+      let message = ethers.utils.solidityPack(
+        ["address", "uint256", "string", "address", "uint256", "uint256"],
+        [erc721Token.address, 0, "DemoTest", hawks.address, NFTPrice, Nonce]
+      );
 
-    //   let messageHash = ethers.utils.keccak256(message);
-    //   let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
+      let messageHash = ethers.utils.keccak256(message);
+      let SellerSign = await web3.eth.accounts.sign(messageHash, SellerPrivate);
+      console.log(await hawks.balanceOf(buyer.address));
 
+      // await hawks.transfer(buyer.address,1000000);
+      await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
+      await hawks.connect(buyer).approve(marketPlace.address,20000);
 
-    //   await myToken.transfer(buyer.address,1000000);
-    //   await erc721Token.connect(seller).setApprovalForAll(marketPlace.address, true);
-    //   await myToken.connect(buyer).approve(marketPlace.address,20000);
-
-    //   let Lazybuy = await marketPlace
-    //               .connect(buyer)
-    //               .LazyBuy([
-    //                 Nonce,
-    //                 seller.address,
-    //                 erc721Token.address,
-    //                 myToken.address,
-    //                 0,
-    //                 Royality,
-    //                 NFTPrice,
-    //                 SellerSign.signature,
-    //                 "DemoTest",
-    //                 Block.timestamp,
-    //                 Block.timestamp + 100,
-    //               ]);
+      let Lazybuy = await marketPlace
+                  .connect(buyer)
+                  .LazyBuy([
+                    Nonce,
+                    seller.address,
+                    erc721Token.address,
+                    hawks.address,
+                    0,
+                    Royality,
+                    NFTPrice,
+                    SellerSign.signature,
+                    "DemoTest",
+                    Block.timestamp,
+                    Block.timestamp + 100,
+                  ],[
+                  "0xd8dc0f69e910411fe490fa6d37d0c1624dfccf0506c98ff5140448cb5faedc54",
+                    "0x536382c680b10be7294edd08db0161a6f438e9340af2a04916d8ad39952fac67"
+                  ]);
 
       
-    // })
+    })
 
 //     it("Should LazyBuy Minted NFT", async () => {
 //       let BlockNumber = await ethers.provider.getBlockNumber();
@@ -227,4 +230,4 @@ describe("NFTCollection", async () => {
               
   })
 
-});
+// });
