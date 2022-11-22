@@ -4,6 +4,7 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 import { getNFt } from "../pages/api/apiCalls"
 
 
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

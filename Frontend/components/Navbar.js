@@ -122,7 +122,7 @@ function NavScrollExample() {
             <a>
               <Image
                 className={styles.logoplace}
-                src="/logo.svg"
+                src="/yogi.png"
                 width="40px"
               ></Image>
             </a>
