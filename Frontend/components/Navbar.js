@@ -42,7 +42,7 @@ function NavScrollExample() {
               Home
             </Nav.Link>
 
-            <Nav.Link className={styles.Create} href="Wallet">
+            <Nav.Link className={styles.Create} href="Create">
               Create
             </Nav.Link>
             <Link href="/Profile">
