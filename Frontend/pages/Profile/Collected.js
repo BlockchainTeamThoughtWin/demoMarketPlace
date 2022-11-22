@@ -1,9 +1,10 @@
 import React from 'react'
+// import { useState } from 'react'
 
 const Collected = () => {
   return (
     <div>
-      Collecteddfgfgffg
+      Collected
     </div>
   )
 }
