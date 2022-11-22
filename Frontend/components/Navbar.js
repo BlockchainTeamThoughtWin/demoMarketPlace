@@ -18,7 +18,7 @@ function NavScrollExample() {
             <a>
               <Image
                 className={styles.logoplace}
-                src="/logo.svg"
+                src="/yogi.png"
                 width="40px"
               ></Image>
             </a>
@@ -42,7 +42,7 @@ function NavScrollExample() {
               Home
             </Nav.Link>
 
-            <Nav.Link className={styles.Create} href="Create">
+            <Nav.Link className={styles.Create} href="Wallet">
               Create
             </Nav.Link>
             <Link href="/Profile">
