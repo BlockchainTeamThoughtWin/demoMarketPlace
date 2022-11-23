@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "contracts/interfaces/Iblacklist.sol";
 import "contracts/interfaces/IERC721Mint.sol";
 
-error InvalidProof();
+
 
 contract MarketPlace is Initializable, OwnableUpgradeable {
     // Use OpenZeppelin's SafeMath library to prevent overflows.
@@ -20,11 +20,23 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     uint256 public platFormFeePercent; // variable for platform fee.
 
     // Scale is the number of digits to the right of the decimal point in a number.
-    uint256 public constant decimalPrecision = 100;
+    uint256 public constant DECIMAL_PRECISION = 100;
 
     bytes32 public merkleRoot; // set merkleRoot
 
     IblackList private blacklist; // interface for blacklist
+
+
+        // ============ modifier ============
+    modifier checkBalanceAndAllownce(
+        address _paymentAssetAddress,
+        address _address,
+        uint256 _amount
+    ) {
+        checkERC20Balance(_paymentAssetAddress, _address, _amount);
+        checkERC20Allowance(_paymentAssetAddress, _address, _amount);
+        _;
+    }
 
     // ============ Structs ============
     struct SellerDetails {
@@ -50,7 +62,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     }
 
     // ============ Events ============
-    event lazy_buy(
+    event LazyBuy(
         address seller,
         address buyer,
         address assetAddress,
@@ -58,20 +70,21 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         uint256 nonce
     );
 
-    event lazy_Auction(
+    event LazyAuction(
         address sellerAddress,
         address winner,
         address nftAddress,
         uint256 tokenId,
         uint256 amount
     );
-
-    event lazy_Auction_duration(uint256 startTime, uint256 endTime);
+    event LazyAuctionDuration(uint256 startTime, uint256 endTime);
 
     // ============ mapping ============
     mapping(uint256 => bool) public isNonceProcessed; //mapping for nonce.
 
-    // ============ initialization ============
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
     function initialize(IblackList _blacklistAddress) public initializer {
         __Ownable_init();
         platFormFeePercent = 250;
@@ -79,6 +92,9 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     }
 
     // ============ Set methods ============
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
     function setPlatFormFeePercent(uint256 _newPlatFormFeePercent)
         public
         onlyOwner
@@ -86,40 +102,38 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         platFormFeePercent = _newPlatFormFeePercent;
     }
 
+    /**
+     * @dev Set merkle root, only owner can set the root.
+     */
     function setMerkleRoot(bytes32 _root) public onlyOwner {
         merkleRoot = _root;
     }
 
-    // ============ modifier ============
-    modifier _CheckBalAllo(
-        address _paymentAssetAddress,
-        address _address,
-        uint256 _amount
-    ) {
-        _CheckBalance(_paymentAssetAddress, _address, _amount);
-        _;
-        _TokenAllowance(_paymentAssetAddress, _address, _amount);
-    }
-
-    // ============ Custom Methods ============
-    function _CalculatedPlatFormFee(
+    // ============ internal Methods ============
+    /**
+     * @dev calculate platform fees
+     */
+    function platFormFee(
         address _paymentAssetAddress,
         address _address,
         uint256 _amount
     )
         internal
         view
-        _CheckBalAllo(_paymentAssetAddress, _address, _amount)
+        checkBalanceAndAllownce(_paymentAssetAddress, _address, _amount)
         returns (uint256)
     {
         uint256 feeOnPlatForm = (_amount)
             .mul(platFormFeePercent)
-            .div(decimalPrecision)
+            .div(DECIMAL_PRECISION)
             .div(100);
         return feeOnPlatForm;
     }
 
-    function _CheckBalance(
+    /**
+     * @dev cheaking the balance of a user.
+     */
+    function checkERC20Balance(
         address _paymentAssetAddress,
         address _address,
         uint256 _amount
@@ -130,7 +144,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
     }
 
-    function _TokenAllowance(
+    /**
+     * @dev Cheak the allownace of `operator` on behalf of `user`.
+     */
+    function checkERC20Allowance(
         address _paymentAssetAddress,
         address _address,
         uint256 _amount
@@ -142,7 +159,10 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
     }
 
-    function _isCollectionApproved(SellerDetails calldata seller)
+    /**
+     * @dev Approve `operator` to operate on all of `owner` tokens 
+     */
+    function _isNFTApproved(SellerDetails calldata seller)
         internal
         view
     {
@@ -150,26 +170,20 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         require(
             instance.isApprovedForAll(seller.sellerAddress, address(this)) ||
                 instance.getApproved(seller.tokenId) == address(this),
-            "MarketPlace: Collection must be approved."
+            "MarketPlace: NFT must be approved."
         );
     }
 
-    function _isWinnerAddress(address _winnerAddress)
-        internal
-        view
-        returns (address)
-    {
-        require(_winnerAddress == msg.sender, "incorrect address");
-        return _winnerAddress;
-    }
-
+    /**
+     * @dev Check 'tokenId' is minted or not.
+    */
     function _isMinted(SellerDetails calldata seller)
         internal
         returns (uint256)
     {
         uint256 tokenId;
         if (seller.tokenId != 0) {
-            _isCollectionApproved(seller);
+            _isNFTApproved(seller);
             tokenId = seller.tokenId;
         } else {
             tokenId = IERC721Mint(seller.nftAddress).mint(
@@ -177,17 +191,17 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
                 seller.royality,
                 seller.tokenUri
             );
-            _isCollectionApproved(seller);
+            _isNFTApproved(seller);
         }
         return tokenId;
     }
 
-    function CalculatedRoyality(SellerDetails calldata seller, uint256 _tokenId)
+    function getRoyality(address _nftContract, uint256 _tokenId, uint256 _nftPrice)
         internal
         view
         returns (address, uint256)
     {
-        return IERC2981(seller.nftAddress).royaltyInfo(_tokenId, seller.amount);
+        return IERC2981(_nftContract).royaltyInfo(_tokenId, _nftPrice);
     }
 
     /**
@@ -195,7 +209,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
      *@notice @notice This function will use to mint NFT which is created from frontend the redeemer redem this NFT by passing the required agrs
      *@param seller: the seller details provide all the necessary detail for the seller.
      */
-    function LazyBuy(SellerDetails calldata seller, bytes32[] calldata _proof)
+    function lazyBuy(SellerDetails calldata seller, bytes32[] calldata _proof, bool onlyForWhiteList)
         external
     {
         require(
@@ -203,14 +217,8 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
             "MarketPlace: user is blacklisted"
         );
 
-        if (
-            !MerkleProof.verify(
-                _proof,
-                merkleRoot,
-                keccak256(abi.encodePacked(msg.sender))
-            )
-        ) {
-            revert InvalidProof();
+        if (onlyForWhiteList==true){ 
+           require( MerkleProof.verify(_proof,merkleRoot,keccak256(abi.encodePacked(msg.sender))),"MarketPlace: User is Not Whitlisted");
         }
 
         require(
@@ -237,21 +245,22 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         instance20.transferFrom(
             msg.sender,
             address(this),
-            _CalculatedPlatFormFee(
+            platFormFee(
                 seller.paymentAssetAddress,
                 msg.sender,
                 seller.amount
             )
         ); //transfer PlatformFee
-        remaining_amount -= _CalculatedPlatFormFee(
+        remaining_amount -= platFormFee(
             seller.paymentAssetAddress,
             msg.sender,
             seller.amount
         );
 
-        (address receiver, uint256 royaltyAmount) = CalculatedRoyality(
-            seller,
-            tokenId
+        (address receiver, uint256 royaltyAmount) = getRoyality(
+            seller.nftAddress,
+            tokenId,
+            seller.amount
         );
         if (royaltyAmount > 0) {
             if (seller.sellerAddress != receiver) {
@@ -268,7 +277,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
 
         isNonceProcessed[seller.nonce] = true;
 
-        emit lazy_buy(
+        emit LazyBuy(
             seller.sellerAddress,
             msg.sender,
             seller.paymentAssetAddress,
@@ -287,19 +296,15 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
     function lazyAuction(
         SellerDetails calldata seller,
         WinnerDetails calldata winnerDetails,
-        bytes32[] calldata _proof
+        bytes32[] calldata _proof,
+        bool onlyForWhiteList
     ) external {
         require(blacklist._isPermitted(winnerDetails.winnerAddress), "user is blacklisted");
 
-        if (
-            !MerkleProof.verify(
-                _proof,
-                merkleRoot,
-                keccak256(abi.encodePacked(winnerDetails.winnerAddress))
-            )
-        ) {
-            revert InvalidProof();
+        if (onlyForWhiteList==true){ 
+           require( MerkleProof.verify(_proof,merkleRoot,keccak256(abi.encodePacked(winnerDetails.winnerAddress))),"MarketPlace: User is Not Whitlisted");
         }
+        
 
         require(
             !isNonceProcessed[seller.nonce],
@@ -312,8 +317,7 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         );
 
         require(
-            _isWinnerAddress(winnerDetails.winnerAddress) ==
-                verifyWinnerSign(winnerDetails),
+           verifyWinnerSign(winnerDetails) == winnerDetails.winnerAddress,
             "MarketPlace: winner sign verification failed"
         );
 
@@ -331,21 +335,22 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
         instanceERC20.transferFrom(
             winnerDetails.winnerAddress,
             address(this),
-            _CalculatedPlatFormFee(
+            platFormFee(
                 seller.paymentAssetAddress,
                 winnerDetails.winnerAddress,
-                seller.amount
+                winnerDetails.amount
             )
         );
-        remaining_amount -= _CalculatedPlatFormFee(
+        remaining_amount -= platFormFee(
             seller.paymentAssetAddress,
             winnerDetails.winnerAddress,
-            seller.amount
+            winnerDetails.amount
         );
 
-        (address receiver, uint256 royaltyAmount) = CalculatedRoyality(
-            seller,
-            tokenId
+        (address receiver, uint256 royaltyAmount) = getRoyality(
+            seller.nftAddress,
+            tokenId,
+            winnerDetails.amount
         );
         if (royaltyAmount > 0) {
             if (seller.sellerAddress != receiver) {
@@ -366,14 +371,14 @@ contract MarketPlace is Initializable, OwnableUpgradeable {
 
         isNonceProcessed[seller.nonce] = true;
 
-        emit lazy_Auction(
+        emit LazyAuction(
             seller.sellerAddress,
             winnerDetails.winnerAddress,
             seller.nftAddress,
             tokenId,
             seller.amount
         );
-        emit lazy_Auction_duration(seller.startTime, seller.endTime);
+        emit LazyAuctionDuration(seller.startTime, seller.endTime);
     }
 
     function getSigner(bytes32 hash, bytes memory _signature)

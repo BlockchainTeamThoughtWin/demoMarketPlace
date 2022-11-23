@@ -77,14 +77,14 @@ networks: {
       enabled: true
     }
   },
-  goerli: {
-      url: process.env.ALCHEMY_GOERLI_URL,
+  matic: {
+      url: process.env.ALCHEMY_POLYGON_URL,
       accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY1]
     },
   },
   etherscan: {
     apiKey: {
-      goerli: process.env.GORELI_API_KEY
+      polygonMumbai: process.env.MATIC_API_KEY
     }
   }
 };

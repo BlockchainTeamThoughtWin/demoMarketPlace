@@ -10,7 +10,7 @@ async function main() {
  
   
   const MarketPlace = await hre.ethers.getContractFactory("MarketPlace")
-  const marketPlace = await upgrades.upgradeProxy("0x473F94773f52E8F4967EE7F91650a90cc85f03b7", MarketPlace)
+  const marketPlace = await upgrades.upgradeProxy("0xe30D31189A623d6acF2F3d11A1019917048FF580", MarketPlace)
   
   await marketPlace.deployed();
   console.log("Updated")
