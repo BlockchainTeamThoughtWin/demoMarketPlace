@@ -1,5 +1,6 @@
 import styles from "../styles/index.module.css";
 import React from "react";
+// import WalletConnection from "../components/metaMask.js";
 
 import Link from "next/link";
 import Navbar from "../components/Navbar";

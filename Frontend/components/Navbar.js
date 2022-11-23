@@ -1,15 +1,36 @@
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import styles from "../styles/Navbar.module.css";
 import Image from "react-bootstrap/Image";
 import Link from "next/link";
-import Dropdown from "react-bootstrap/Dropdown";
+import React from "react";
+import WalletNav from "../components/WalletNavbar"
+import { useWeb3React } from "@web3-react/core";
+import { Button } from "react-bootstrap";
+
+import { connectors } from "../functions/connectors";
+
+
+import { useState, useEffect } from "react";
+
+import WalletConnectModal from "./WalletConnectModal";
+import { useRouter } from "next/router";
+
 
 function NavScrollExample() {
+  
+const {account} = useWeb3React();
+const [show, setShow] = useState(false);
+const handleClose = () => setShow(false);
+
+const router = useRouter();
+
+const handleCreateFrom= ()=>{
+ setShow(true);
+ router.push("/")
+}
+const [currentChainId, setCurrentChainId] = useState();
   return (
     <Navbar className={styles.NavbarColor} expand="lg">
       <Container fluid>
@@ -41,10 +62,32 @@ function NavScrollExample() {
             <Nav.Link className={styles.Home} href="/">
               Home
             </Nav.Link>
-
-            <Nav.Link className={styles.Create} href="Create">
+            {account? <Nav.Link className={styles.Create} href="Create" >
               Create
-            </Nav.Link>
+
+              </Nav.Link>:  <Nav.Link className={styles.Create} onClick={handleCreateFrom} >
+              Create
+
+              </Nav.Link>
+       }
+              {/* <>
+              {
+                account != undefined ? <Nav.Link className={styles.Create} href="Create" >
+                Create
+              </Nav.Link> : <a className={styles.Create} onClick={WalletNav} >
+              Connect
+            </a>
+              }
+              </> */}
+            {/* {account != undefined ? 
+            <Nav.Link className={styles.Create} href="Create" >
+              Create
+            </Nav.Link> : <button>CreateNFT</button>
+            } */}
+{/* 
+<Nav.Link className={styles.Create} href="Create" >
+              Create
+            </Nav.Link> */}
             <Link href="/Profile">
               <a>
                 <Image
@@ -55,20 +98,14 @@ function NavScrollExample() {
                 ></Image>
               </a>
             </Link>
-
-            <Link href="/Wallet">
-              <a>
-                <Image
-                  src="/wallet.png"
-                  width="30px"
-                  height="30"
-                  className={styles.IconWallet}
-                ></Image>
-              </a>
-            </Link>
+           
+<WalletNav/>
+        
           </Nav>
         </Navbar.Collapse>
+
       </Container>
+      <WalletConnectModal  show ={show} handleClose={handleClose} currentChainId={currentChainId}/>
     </Navbar>
   );
 }

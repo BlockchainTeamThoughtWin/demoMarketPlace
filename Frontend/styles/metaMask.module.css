@@ -1,0 +1,11 @@
+.Metamask{
+    padding: 10px;
+}
+
+.ConnectWallet{
+    text-align: center;
+}
+.metamask_button button{
+    padding: 0px !important;
+    margin: 0px !important;
+}

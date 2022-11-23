@@ -1,7 +1,7 @@
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import { getNFt } from "../pages/api/apiCalls.js";
+import { getNFt } from "../pages/api/apiCalls"
 import style from "../styles/CardSlide.module.css"
 
 import "swiper/css";

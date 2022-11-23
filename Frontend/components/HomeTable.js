@@ -1,6 +1,8 @@
 import Table from "react-bootstrap/Table";
 import { useEffect } from "react";
-import { getNFt } from "../pages/api/apiCalls.js";
+import { getNFt } from "../pages/api/apiCalls"
+
+
 import React from "react";
 import axios from "axios";
 

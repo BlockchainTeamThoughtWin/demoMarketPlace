@@ -1,6 +1,14 @@
 import "../styles/globals.css";
 import Script from "next/script";
 import Head from "next/head";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Web3ReactProvider } from "@web3-react/core";
+import Web3 from "web3";
+
+function getLibrary(provider) {
+  return new Web3(provider);
+}
+
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -17,7 +25,9 @@ function MyApp({ Component, pageProps }) {
         id="bootstrap-cdn"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       />
-      <Component {...pageProps} />
+    <Web3ReactProvider getLibrary={getLibrary}>
+  <Component {...pageProps} />
+  </Web3ReactProvider>
     </>
   );
 }
