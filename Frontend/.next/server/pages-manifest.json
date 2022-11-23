@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/Create": "pages/Create.js",
-  "/": "pages/index.js",
-  "/[tokenID]": "pages/[tokenID].js"
+  "/[tokenID]": "pages/[tokenID].js",
+  "/": "pages/index.js"
 }
