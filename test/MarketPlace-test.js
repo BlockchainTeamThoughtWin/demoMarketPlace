@@ -154,7 +154,7 @@ describe("Marketplace",async () => {
             await Hawks.transfer(winnerAddress, 10000);
             await Hawks.connect(winner).approve(marketPlace.address, 1000);
             await marketPlace.connect(seller).setMerkleRoot("0x9e1d84ca9c7548b9920bc4881db28863cc28dcc8447bac67b0881621aa70ac1b")
-            await marketPlace.connect(winner).lazyAuction(sellerDetails, winnerDetails,proof);
+            await marketPlace.connect(winner).lazyAuction(sellerDetails, winnerDetails,proof,true);
             let Plat = (winnerAmount*platFormFeePercent)/10000
             console.log("hjhjjhjjjj",Plat);
             let NewPlatformFeeAmunt = await Hawks.balanceOf(marketPlace.address);
@@ -343,7 +343,7 @@ describe("Marketplace",async () => {
             await ercToken.connect(winner).setApprovalForAll(marketPlace.address, true);
             await Hawks.transfer(winnerAdd, 10000);
             await Hawks.connect(add1).approve(marketPlace.address, 2000);
-            await marketPlace.connect(add1).lazyAuction(sellerStruct, winnerStruct, proof);
+            await marketPlace.connect(add1).lazyAuction(sellerStruct, winnerStruct, proof,true);
             console.log(await Hawks.balanceOf(add1.address));
 
 
