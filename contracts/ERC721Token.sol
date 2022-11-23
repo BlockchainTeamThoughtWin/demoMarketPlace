@@ -6,21 +6,16 @@ import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721RoyaltyUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "contracts/interfaces/Iblacklist.sol";
- 
+
+
 contract ERC721Token is
-    ERC721Upgradeable,
     OwnableUpgradeable,
     ERC721URIStorageUpgradeable,
     ERC721BurnableUpgradeable,
-    ERC721EnumerableUpgradeable,
-    ERC721PausableUpgradeable,
-    ERC721RoyaltyUpgradeable
-{
+    ERC721RoyaltyUpgradeable{
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _tokenIds;
     IblackList blacklist;
@@ -33,8 +28,6 @@ contract ERC721Token is
     {
         __ERC721_init("MarketPlace", "MKP");
         __ERC721Burnable_init();
-        __ERC721Enumerable_init();
-        __ERC721Pausable_init();
         __ERC721Royalty_init();
         __ERC721URIStorage_init();
         __Ownable_init();
@@ -71,22 +64,6 @@ contract ERC721Token is
         maximumRoyality = _value;
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    )
-        internal
-        virtual
-        override(
-            ERC721EnumerableUpgradeable,
-            ERC721PausableUpgradeable,
-            ERC721Upgradeable
-        )
-    {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
     function _burn(uint256 tokenId)
         internal
         virtual
@@ -104,7 +81,6 @@ contract ERC721Token is
         view
         virtual
         override(
-            ERC721EnumerableUpgradeable,
             ERC721RoyaltyUpgradeable,
             ERC721Upgradeable
         )
