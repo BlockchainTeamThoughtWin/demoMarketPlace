@@ -12,9 +12,8 @@ const userVerificationSchema = require('../model/UserVerificationSchema');
 // console.log(userVerificationSchema,"Daata base");
 
 exports.create_user_verification = async function(req,resp){ 
-    console.log('req',req.body);
     const data = new userVerificationSchema(req.body);
-    console.log("data related to signature >>>> ",data);
+    console.log("data related to signature>>>> ",data);
     const signer = await web3.eth.accounts.recover(req.body.nonce,req.body.signature);
     console.log(signer,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     if(signer == req.body.user_address){

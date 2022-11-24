@@ -3,7 +3,7 @@ const router = express.Router();
 
 const NonceDetailsController = require('../controllers/nonceController');
 
-// router.post('/', NonceDetailsController.set_nonce);
+router.post('/', NonceDetailsController.set_nonce);
 router.get('/', NonceDetailsController.get_nonce);
 router.get('/:nonce', NonceDetailsController.get_by_nonce);
 
