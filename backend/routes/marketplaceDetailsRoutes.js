@@ -11,5 +11,6 @@ router.get('/:_id', MarketplaceController.get_post);
 
 router.delete('/:_id', MarketplaceController.delete_post);
 router.put('/:_id', MarketplaceController.put_post);
+router.patch('/:_id', MarketplaceController.put_post);
 
 module.exports = router;

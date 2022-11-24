@@ -21,8 +21,9 @@ const nftDetailsSchema = new mongoose.Schema({
     type: String,
   },
   nonce: {
-    type: Number,
-    unique: true,
+    type:Number,
+    // index:true,
+    default:0,
   },
   seller_address: {
     type: String,
