@@ -10,6 +10,8 @@ import NotableCollections from "../components/NotableCollections";
 import Dreamersspotlight from "../components/Dreamersspotlight";
 
 export default function Home() {
+ 
+  
   return (
     <>
       <title>Yogi's Market Place</title>

@@ -76,11 +76,8 @@ export default function WalletConnectModal(props) {
 
   async function walletConnect() {
     activate(connectors.walletConnect, undefined, true).catch((error) => {
-      // if (error instanceof UnsupportedChainIdError) {
+      
       activate(connectors.walletConnect);
-      // } else {
-      //   console.log("Pending Error Occured");
-      // }
     });
     router.push("/")
   }
@@ -89,7 +86,7 @@ export default function WalletConnectModal(props) {
     balance = await provider.getBalance(
       "0x678fee76722fcDB047543fB7Fb92821e6E19F8db"
     );
-    console.log(ethers.utils.formatEther(balance));
+    
   }
 
   return (

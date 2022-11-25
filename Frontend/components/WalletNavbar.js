@@ -22,12 +22,12 @@ function WalletNav() {
   const handleShow = () => setShow(true);
   const [currentChainId, setCurrentChainId] = useState();
 
- 
+
 
   const { activate } =
     useWeb3React();
 
- 
+
 
   useEffect(() => {
     if (typeof window !== "undefined" && !!window.ethereum) {
@@ -35,12 +35,6 @@ function WalletNav() {
       setCurrentChainId(window?.ethereum.chainId);
     }
   });
-  console.log("chainId: ", currentChainId);
-
- 
- 
-
-  // checkBalance();
 
 
 
@@ -52,22 +46,20 @@ function WalletNav() {
   return (
     <Navbar className={styles.NavbarColor} expand="lg">
       <Container fluid>
-       
-            <Button className={styles.IconWallet} onClick={handleShow} >
-              <span>
-                <Image
-                  src="/wallet.png"
-                  width="30px"
-                  height="30"
-                  className={styles.IconWallet}
-                ></Image>
-              </span>
-            </Button>
-            <WalletConnectModal  show ={show} handleClose={handleClose} currentChainId={currentChainId}/>
 
-         {/* <WalletConnectModal/> */}
-       
-        {/* <Button variant="white">Connect</Button> */}
+        <Button className={styles.IconWallet} onClick={handleShow} >
+          <span>
+            <Image
+              src="/wallet.png"
+              width="30px"
+              height="30"
+              className={styles.IconWallet}
+            ></Image>
+          </span>
+        </Button>
+        <WalletConnectModal show={show} handleClose={handleClose} currentChainId={currentChainId} />
+
+
       </Container>
     </Navbar>
   );

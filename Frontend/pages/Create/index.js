@@ -7,40 +7,27 @@ import { CreateNFT } from "../api/apiCalls";
 import { getNonce, UpdateNonce } from "../api/apiCalls";
 import axios from "axios";
 import { useRouter } from 'next/router'
-import Web3 from 'web3'; 
+import Web3 from 'web3';
 import { useWeb3React } from "@web3-react/core";
-
+import { Sign } from "../../components/utils";
+// require('dotenv').config()
 
 
 const Create = () => {
-
+  
+ 
+   
   const { active, chainId, account, library, connector, activate, deactivate } =
-  useWeb3React();
+    useWeb3React();
 
-  console.log(account,">>>>>>>>")
-
-
-  //current provider is the provider injected by MetaMask 
-  // let web3;
-  
-  // //typeof is used to check if window is defined 
-  // if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
-  //   // We are in the browser and metamask is running.
-  //   //Connect metamask to the webapp 
-  //   window.ethereum.enable(); 
-  //   web3 = new Web3(window.web3.currentProvider);
-  // } else {
-  //   // We are on the server *OR* the user is not running metamask
-  //   const provider = new Web3.providers.HttpProvider( 'https://ropsten.infura.io/v3/KEY');
-  //   web3 = new Web3(provider);
-  // } 
-  
+    console.log(library)
+    
 
   const router = useRouter();
   let currentNonce, updatedNonce;
 
   const getInitialState = () => {
-    const value = "Orange";
+    const value = "Ethereum";
     return value;
   };
 
@@ -59,11 +46,20 @@ const Create = () => {
     nonce: "",
     currentNonce: "",
     Imguri: "",
+    TokenURI: "",
   });
 
+  const [formError, setFromError] = useState({});
 
   const [imageUrl, setImageUrl] = useState("");
+  const [isSubmit, setIsSubmit] = useState(true);
 
+  useEffect(()=>{
+    console.log(formError);
+   if(Object.keys(formError).length === 0 && isSubmit){
+    console.log(query);
+   }
+   },[formError])
 
   const getBase64 = async (e) => {
     // debugger
@@ -96,34 +92,98 @@ const Create = () => {
     reader.onerror = function (error) {
       console.log("Error: ", error);
     };
+
   }
+
 
   const handleParam = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     setQuery({ ...query, [name]: value });
   };
+
+  const validate = (query) => {
+  const error = {};
+  if(!query.name){
+    error._name = "Name is Required!"
+    setIsSubmit(false);
+  }
+
+  if(!query.Supply){
+    error.Supply = "Supply is Required!"
+    setIsSubmit(false);
+  }
+
+  if(!query.BlockChain){
+    error.BlockChain = "Select the BlockChain!"
+    setIsSubmit(false);
+  }
+   
+return error;
+
+  }
   // Form Submit function
   const formSubmit = async () => {
-    const a = await getNonce();
+    if (isSubmit == true) {
+      
+    
+    const GetNonce = await getNonce();
 
-    if (a.data[0]?.nonce == undefined) {
+    if (GetNonce.data[0]?.nonce == undefined) {
       currentNonce = 0;
     } else {
-      console.log(a.data[0]?.nonce);
-      currentNonce = a.data[0]?.nonce;
+      console.log(GetNonce.data[0]?.nonce);
+      currentNonce = GetNonce.data[0]?.nonce;
     }
+
+
+
 
     const tokenId = 0;
     query.currentNonce = currentNonce;
+    
     query.nonce = currentNonce + 1;
 
     query.token_id = tokenId;
-    
+
     query.owner_address = account;
+
+    const _json = new File([JSON.stringify(query)], 'metadata.json');
+    console.log("JSON File is", _json);
+
+    console.log("qwery", query);
+
+    const fData = new FormData()
+    fData.append("file", _json);
+  const  url = "https://api.pinata.cloud/pinning/pinFileToIPFS"
+    const response = await axios.post(
+      url,
+      fData,
+      {
+        maxContentLength: "Infinity",
+        headers: {
+          "Content-Type": `multipart/form-data;boundary=${query._boundary}`,
+          'pinata_api_key': "d0d1a9de90159925f8b6",
+          'pinata_secret_api_key': "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
+
+        }
+      }
+    )
+    const Token_URI = response.data.IpfsHash;
+    query.TokenURI =  Token_URI;
+    // const ERC721 = "0x10E457129b4F5F35EdaC901AC669333a887C1513"
+    // const ERC20 = "0x12A98122E956Bbf3535523Ac9A2C178E3E2af325"
+    // const Signature = await Sign(ERC721, query.token_id, query.TokenURI, ERC20,500, query.nonce,account,library?.givenProvider )
+    // console.log("the signature is ",Signature);
+
+    setFromError(validate(query))
+    setIsSubmit(true);
+
     await CreateNFT(query);
 
-    router.push("/")
+    
+    // router.push("/")
+    }
   };
 
   return (
@@ -153,7 +213,8 @@ const Create = () => {
               onChange={handleParam}
             />
           </Form.Group>
-
+          
+          <p className={style.error}> {formError._name}</p>
           <Form.Group>
             <Form.Label>
               <h3 className={style.Names}>External Link</h3>
@@ -172,6 +233,7 @@ const Create = () => {
               onChange={handleParam}
             />
           </Form.Group>
+   
           <Form.Group>
             <Form.Label>
               <h3 className={style.Names}>Description</h3>
@@ -190,7 +252,6 @@ const Create = () => {
               onChange={handleParam}
             />
           </Form.Group>
-
           <Form.Group>
             <Form.Label>
               <h3 className={style.Names}>Supply</h3>
@@ -206,7 +267,7 @@ const Create = () => {
               onChange={handleParam}
             />
           </Form.Group>
-
+          <p className={style.error} > {formError.Supply}</p>
           <Form.Group>
             <div>
               <h1 className={style.Names}>BlockChain</h1>
@@ -221,6 +282,8 @@ const Create = () => {
 
             </div>
           </Form.Group>
+          <p className={style.error}> {formError.BlockChain}</p>
+
           <Button className={style.primary} onClick={formSubmit}>
             Submit
           </Button>
