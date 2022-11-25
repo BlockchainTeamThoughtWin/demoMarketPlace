@@ -14,6 +14,8 @@ import { useWeb3React } from "@web3-react/core";
 import Modal from "react-bootstrap/Modal";
 import { useState, useEffect } from "react";
 import style from "../styles/metaMask.module.css";
+import WalletConnection from "./Wallet/WalletConnection";
+
 
 function NavScrollExample() {
   const [show, setShow] = useState(false);
@@ -97,13 +99,13 @@ function NavScrollExample() {
     });
   }
 
-  async function checkBalance() {
-    balance = await provider.getBalance(
-      "0x678fee76722fcDB047543fB7Fb92821e6E19F8db"
-    );
-    console.log(ethers.utils.formatEther(balance));
-  }
-  // checkBalance();
+  // async function checkBalance() {
+  //   balance = await provider.getBalance(
+  //     "0x678fee76722fcDB047543fB7Fb92821e6E19F8db"
+  //   );
+  //   console.log(ethers.utils.formatEther(balance));
+  // }
+  // // checkBalance();
 
   async function setProvider(type) {
     window?.localStorage.setItem("provider", type);
@@ -146,9 +148,27 @@ function NavScrollExample() {
               Home
             </Nav.Link>
 
-            <Nav.Link className={styles.Create} href="Create">
-              Create
-            </Nav.Link>
+            <>
+              {account != undefined ? (
+                <Nav.Link className={styles.Create} href="Create">
+                  Create
+                </Nav.Link>
+              ) : (
+                <Button className={styles.IconWallet} onClick={handleShow}>
+                  <span>
+                    <Image
+                      src="/wallet.png"
+                      width="30px"
+                      height="30"
+                      className={styles.IconWallet}
+                    ></Image>
+                  </span>
+                </Button>
+              )}
+            </>
+
+            {/* <WalletConnection /> */}
+
             <Link href="/Profile">
               <a>
                 <Image
@@ -169,17 +189,6 @@ function NavScrollExample() {
                 ></Image>
               
             </Link> */}
-
-            <Button className={styles.IconWallet} onClick={handleShow}>
-              <span>
-                <Image
-                  src="/wallet.png"
-                  width="30px"
-                  height="30"
-                  className={styles.IconWallet}
-                ></Image>
-              </span>
-            </Button>
 
             <Modal show={show} onHide={handleClose} className="metamask_button">
               <Modal.Header closeButton>

@@ -6,28 +6,27 @@ import Button from "react-bootstrap/Button";
 import { CreateNFT } from "../api/apiCalls";
 import { getNonce, UpdateNonce } from "../api/apiCalls";
 import axios from "axios";
-import { useRouter } from 'next/router'
-import Web3 from 'web3'; 
-
+import { useRouter } from "next/router";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
 
 const Create = () => {
-
-
-  //current provider is the provider injected by MetaMask 
+  //current provider is the provider injected by MetaMask
   let web3;
-  
-  //typeof is used to check if window is defined 
-  if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
+  const { account, library } = useWeb3React();
+  //typeof is used to check if window is defined
+  if (typeof window !== "undefined" && typeof window.web3 !== "undefined") {
     // We are in the browser and metamask is running.
-    //Connect metamask to the webapp 
-    window.ethereum.enable(); 
+    //Connect metamask to the webapp
+    window.ethereum.enable();
     web3 = new Web3(window.web3.currentProvider);
   } else {
     // We are on the server *OR* the user is not running metamask
-    const provider = new Web3.providers.HttpProvider( 'https://ropsten.infura.io/v3/KEY');
+    const provider = new Web3.providers.HttpProvider(
+      "https://ropsten.infura.io/v3/KEY"
+    );
     web3 = new Web3(provider);
-  } 
-  
+  }
 
   const router = useRouter();
   let currentNonce, updatedNonce;
@@ -38,8 +37,6 @@ const Create = () => {
   };
 
   const [value, setValue] = useState(getInitialState);
-
-
 
   const [query, setQuery] = useState({
     _name: "",
@@ -52,11 +49,10 @@ const Create = () => {
     nonce: "",
     currentNonce: "",
     Imguri: "",
+    owner_address: "",
   });
 
-
   const [imageUrl, setImageUrl] = useState("");
-
 
   const getBase64 = async (e) => {
     // debugger
@@ -71,9 +67,10 @@ const Create = () => {
       url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
       data: formData,
       headers: {
-        'pinata_api_key': "d0d1a9de90159925f8b6",
-        'pinata_secret_api_key': "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
-        "Content-Type": "multipart/form-data"
+        pinata_api_key: "d0d1a9de90159925f8b6",
+        pinata_secret_api_key:
+          "5d2855c8207865cbd91adfee33c52283128121055e7b812013aac7103b135135",
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -89,7 +86,7 @@ const Create = () => {
     reader.onerror = function (error) {
       console.log("Error: ", error);
     };
-  }
+  };
 
   const handleParam = (e) => {
     const name = e.target.name;
@@ -109,13 +106,14 @@ const Create = () => {
 
     const tokenId = 0;
     query.currentNonce = currentNonce;
+    query.owner_address = account;
     query.nonce = currentNonce + 1;
 
     query.token_id = tokenId;
 
     await CreateNFT(query);
 
-    router.push("/")
+    router.push("/");
   };
 
   return (
@@ -203,14 +201,18 @@ const Create = () => {
             <div>
               <h1 className={style.Names}>BlockChain</h1>
 
-              <select name="BlockChain" value={query.BlockChain} onChange={handleParam} className={style.chain}>
-                <option value="" selected>Select the BlockChain</option>
-                <option value="Ethereum" >Ethereum</option>
+              <select
+                name="BlockChain"
+                value={query.BlockChain}
+                onChange={handleParam}
+                className={style.chain}
+              >
+                <option value="" selected>
+                  Select the BlockChain
+                </option>
+                <option value="Ethereum">Ethereum</option>
                 <option value="Polygon">Polygon</option>
-
               </select>
-
-
             </div>
           </Form.Group>
           <Button className={style.primary} onClick={formSubmit}>

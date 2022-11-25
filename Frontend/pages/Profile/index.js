@@ -8,6 +8,9 @@ import { Tabs, Tab, TabList, TabPanel } from "react-tabs";
 import styles from "../../styles/tabsPage.module.css";
 import Favorited from "./Favorited";
 import Activity from "./Activity";
+import Image from "react-bootstrap/Image";
+import { useWeb3React } from "@web3-react/core";
+
 
 const baseStyle = {
   flex: 1,
@@ -65,14 +68,19 @@ const img = {
 };
 
 const Profile = () => {
+  const { account } = useWeb3React();
   const [files, setFiles] = useState([]);
-  const [key, setKey] = useState(0);
+  const [image, setImage] = useState(false);
+  // const [key, setKey] = useState(0);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
 
+  const handleImageSelect = () => {
+    setImage(false);
+  };
   const {
     getRootProps,
     getInputProps,
@@ -84,6 +92,7 @@ const Profile = () => {
   } = useDropzone({
     accept: "image/*",
     onDrop: (acceptedFiles) => {
+      setImage(true);
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -119,68 +128,102 @@ const Profile = () => {
     </div>
   ));
 
-  const handleTabSumit = (newValue) => {
-    setKey(newValue);
-  };
+  // const handleTabSumit = (newValue) => {
+  //   setKey(newValue);
+  // };
   const _tabsList = {
-    display: "inline-flex",
+    display: "block !important",
   };
-  const _tabs = {
-    padding: "10px",
-    display: "inline-block !important",
-  };
-
   return (
     <div>
       <Navbar />
-      <div>
-        <div
-          className="img-fluid shadow-4"
-          alt="..."
-          {...getRootProps({ style })}
-        >
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here</p>
-        </div>
-        <aside>
-          {/* <h4>Files</h4>
-        <ul>{filepath}</ul> */}
-        </aside>
-        <aside style={thumbsContainer}>{thumbs}</aside>
+      <div className={styles.drag_drop}>
+        <>
+          {image == false ? (
+            <div
+              className="img-fluid shadow-4"
+              alt="..."
+              {...getRootProps({ style })}
+            >
+              <input {...getInputProps()} />
+              <p>Background</p>
+            </div>
+          ) : (
+            <a onClick={handleImageSelect}>
+              <aside style={thumbsContainer}>
+                <div style={thumb}>{thumbs}</div>
+              </aside>
+            </a>
+          )}
+        </>
       </div>
+      <p>{ account }</p>
+
+      {/* <div className={styles.drag_drop_Profile}>
+        <>
+          {image == false ? (
+            <div
+              className={styles.imgProfile}
+              alt="..."
+              {...getRootProps({ style })}
+            >
+              <input {...getInputProps()} />
+              <p>Profile</p>
+            </div>
+          ) : (
+            <a onClick={handleImageSelect}>
+              <aside style={thumbsContainer}>
+                <div style={thumb}>{thumbs}</div>
+              </aside>
+            </a>
+          )}
+        </>
+      </div>  */}
 
       <div className="data">
-        <Tabs>
+        <Tabs className={styles._tabsData}>
           <TabList style={_tabsList}>
             <Tab
               className={styles.tabCollect}
-              style={_tabs}
               activeStyle={{ borderBottom: "5px solid blue" }}
             >
               Collected
             </Tab>
+
             <Tab
               className={styles.tabCreated}
-              style={_tabs}
               activeStyle={{ borderBottom: "5px solid blue" }}
             >
               Created
             </Tab>
             <Tab
               className={styles.tabFav}
-              style={_tabs}
               activeStyle={{ borderBottom: "5px solid blue" }}
             >
               Favorited
             </Tab>
             <Tab
               className={styles.tabActive}
-              style={_tabs}
               activeStyle={{ borderBottom: "5px solid blue" }}
             >
               Activity
             </Tab>
           </TabList>
+
+          <div>
+            <input
+              type="search"
+              id="gsearch"
+              name="gsearch"
+              placeholder="Search by Name"
+              className={styles.Search}
+            />
+            <Image className={styles.searchicon} src="searchIcon.png"></Image>
+          </div>
+          <br></br>
+          <br></br>
+          <br></br>
+
           <TabPanel>
             <Collected />
           </TabPanel>

@@ -15,20 +15,10 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/": [
+    "/Profile": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
-    "/Create": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/Create.js"
-    ],
-    "/[tokenID]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/[tokenID].js"
+      "static/chunks/pages/Profile.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",

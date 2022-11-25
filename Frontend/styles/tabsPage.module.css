@@ -1,12 +1,103 @@
-.tabCollect:focus{
-border-bottom: 5px solid blue;
+.tabCollect {
+  padding: 10px;
+  display: inline-block !important;
+  padding-left: 60px;
 }
-.tabCreated:focus{
-    border-bottom: 5px solid blue;
-    }
-    .tabFav:focus{
-        border-bottom: 5px solid blue;
-  }
-.tabActive:focus{
-    border-bottom: 5px solid blue;
-    }
+
+.tabCollect:focus {
+  border-bottom: 5px solid rgb(2, 2, 3);
+}
+.tabCreated {
+  padding: 10px;
+  display: inline-block !important;
+  padding-left: 60px;
+}
+.tabActive {
+  padding: 10px;
+  display: inline-block !important;
+  padding-left: 60px;
+}
+.tabFav {
+  padding: 10px;
+  display: inline-block !important;
+  padding-left: 60px;
+}
+.tabCreated:focus {
+  border-bottom: 5px solid rgb(6, 6, 13);
+}
+.tabFav:focus {
+  border-bottom: 5px solid rgb(6, 6, 10);
+}
+.tabActive:focus {
+  border-bottom: 5px solid rgb(4, 4, 9);
+}
+
+.Search {
+  height: 40px;
+  width: 1400px;
+  background: transparent;
+  text-indent: 68px;
+  display: inline-block;
+  border-radius: 11px;
+  border: 2px solid;
+  margin-top: -1px;
+  position: absolute;
+  right: 501px;
+  overflow: hidden;
+}
+
+.searchicon {
+  /* position: absolute;
+  top: 582px;
+  right: 1863px; */
+  top: 582px;
+  right: 1857px;
+  padding-left: 30px;
+  padding-top: 5px;
+}
+._tabsData ul {
+  border-bottom: 1px solid #767575 !important;
+  display: block !important;
+}
+
+._tabs {
+  padding: 10px;
+  display: block !important;
+  padding-left: 60px;
+}
+.drag_drop {
+  display: block;
+  height: 281;
+}
+
+.getImageName {
+  text-align: center;
+  position: absolute;
+  padding-right: 80%;
+  width: 100%;
+  color: white;
+  border-radius: 0px 0px 25px 25px;
+}
+
+/* .profile {
+  display: flex;
+  border-Radius: 50%;
+  border: 1px solid #eaeaea; */
+  /* margin-Bottom: 8;
+  margin-Right: 8; */
+  /* width: 150px;
+  height: 150px;
+  padding: 4; */
+  /* box-Sizing: border-box; */
+/* } */
+
+/* .drag_drop_Profile {
+  display: block;
+  height: 281;
+} */
+
+/* .imgProfile {
+  width: 10%;
+  height: 170px;
+}; */
+

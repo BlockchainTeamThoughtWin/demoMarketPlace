@@ -49,3 +49,8 @@ export const CreateNonce = async (nonce) => {
 export const UpdateNonce = async (nonce) =>{
   await axios.put(`http://localhost:8000/nonce/${nonce}`);
 }
+
+export const createdNFT = async() => {
+  const resp =  await axios.get("http://localhost:8000/nftdetails/");
+  return resp;
+}
